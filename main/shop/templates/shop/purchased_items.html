@@ -1,0 +1,24 @@
+<h2>Your Purchased Items</h2>
+
+{% if purchases %}
+    <ul>
+        {% for purchase in purchases %}
+            <li>
+                <h3>{{ purchase.item.name }}</h3>
+                <p>{{ purchase.item.description }}</p>
+                <p>Purchased on: {{ purchase.purchase_date_time }}</p>
+                {% if purchase.is_digital %}
+                    <button disabled>Not Redeemable</button>
+                {% elif purchase.is_redeemed %}
+                    <button disabled>Already Redeemed</button>
+                {% else %}
+                    <a href="{% url 'shop:display_redeem_code' redeem_code=purchase.redeem_code %}">
+                        <button>Redeem Item</button>
+                    </a>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>You have no redeemable items.</p>
+{% endif %}

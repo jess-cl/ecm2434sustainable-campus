@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    {% load static %}
+    <title>Sustainable Campus</title>
+    <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+    <link href="https://cdn.lineicons.com/5.0/lineicons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static '/bootstrap/css/bootstrap.min.css' %}">
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom p-3">
+      <div class="container-fluid">
+        <!-- Logo on the left -->
+        <a href="/" class="navbar-brand">
+            <img src="{% static 'images/exeter-logo.png' %}" alt="University of Exeter" width="150" height="auto">
+        </a>
+  
+        <!-- Hamburger menu button for collapsing -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+  
+        <!-- Collapsible content -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <!-- Navigation links in the center -->
+            <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a href="/" class="nav-link px-2 link-dark">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/forest/" class="nav-link px-2 link-dark">My forest</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/shop/" class="nav-link px-2 link-dark">Shop</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/announcements/" class="nav-link px-2 link-dark">Announcements</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/suggestions/" class="nav-link px-2 link-dark">Suggestion box</a>
+                </li>
+            </ul>
+  
+            <!-- Profile dropdown on the right -->
+            <div class="dropdown text-end ms-lg-3">
+                <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="" alt="mdo" width="32" height="32" class="rounded-circle">
+                </a>
+                <ul class="dropdown-menu text-small dropdown-menu-end" aria-labelledby="dropdownUser">
+                    <li><a class="dropdown-item" href="#">Profile</a></li>
+                    <li><a class="dropdown-item" href="#">Settings</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="#">Sign out</a></li>
+                </ul>
+            </div>
+        </div>
+      </div>
+    </nav> 
+
+    <h1>Shop</h1>
+    <p>Placeholder test</p>
+
+
+    <!-- sidebar for use when screen is slim-->
+  <div class="offcanvas offcanvas-start" id="sidebar">
+    <div class="offcanvas-header">
+        <h5>Sustainable Campus</h5>
+        <button type="button" class="btn-close text-reset" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="offcanvasWithBackdrop" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body p-0">
+
+        <li class="sidebar-item display-6 m-2">
+            <a href="/" class="nav-link px-2 link-dark"><i class="lni lni-map-marker-1"></i>  Home</a>
+        </li>
+        <li class="sidebar-item display-6 m-2">
+             <a href="/forest" class="nav-link px-2 link-dark"><i class="lni lni-trees-3"></i>  My forest</a>
+        </li>
+        <li class="sidebar-item display-6 m-2">
+             <a href="/shop/" class="nav-link px-2 link-dark"><i class="lni lni-cart-1"></i>  Shop</a>
+        </li>
+        <li class="sidebar-item display-6 m-2">
+             <a href="/announcements/" class="nav-link px-2 link-dark"><i class="lni lni-comment-1"></i>  Announcements</a>
+        </li>
+        <li class="sidebar-item display-6 m-2">
+            <a href="/suggestions/" class="nav-link px-2 link-dark"><i class="lni lni-box-archive-1"></i>  Suggestion box</a>
+        </li>
+        <li class="/sidebar-item display-6 m-2">
+            <a href="#" class="nav-link px-2 collapsed has-dropdown link-dark" data-bs-toggle="collapse" data-bs-target="#userOptions" aria-expanded="true" aria-controls="userOptions">
+                <span><i class="lni lni-gear-1"></i>  User options</span>
+            </a>
+            <ul id="userOptions" class="sidebar-dropdown px-4 list-unstyled collapse" data-bs-parent="#sidebar">
+                <li class="sidebar-item"><a class="nav-link link-dark" href="#"><i class="lni lni-user-4"></i>  Profile</a></li>
+                <li class="sidebar-item"><a class="nav-link link-dark" href="#"><i class="lni lni-gears-3"></i>  Settings</a></li>
+                <li class="sidebar-item"><a class="nav-link link-dark" href="#"><i class="lni lni-exit"></i>  Sign out</a></li>
+            </ul>
+        </li>
+    </div>
+</div>
+    <!-- Bootstrap JS -->
+    <script src="{% static '/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  </body>
+</html>
