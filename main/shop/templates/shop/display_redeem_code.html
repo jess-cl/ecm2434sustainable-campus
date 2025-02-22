@@ -1,8 +1,0 @@
-{% load static %}
-<h2>Scan the QR Code to Redeem Your Item</h2>
-
-<!-- Display the QR Code image -->
-<img src="{{ qr_code }}" alt="QR Code for redeeming your item">
-<p>Redeem Code: {{ purchase.redeem_code }}</p>
-<p>Item Name: {{ purchase.item.name }}</p>
-<p>Buyer: {{ purchase.user.first_name }} {{ purchase.user.last_name }}</p>
