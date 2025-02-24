@@ -27,7 +27,7 @@ urlpatterns = [
     path("shop/", include("shop.urls")),
     path("suggestions/", include("suggestions.urls")),
     path('leaderboards/', include('leaderboards.urls')),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
 if settings.DEBUG:
