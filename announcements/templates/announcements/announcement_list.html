@@ -21,9 +21,10 @@
     }
 
     .modal-img {
-      max-height: 400px;
-      object-fit: cover;
-    }
+  max-height: 400px; 
+  object-fit: contain; 
+  width: 100%;
+}
 
     .full-content {
       display: none;
@@ -44,16 +45,34 @@
       <a href="{% url 'announcements:create_announcement' %}"
         class="btn btn-outline-success p-2 lh-1 d-flex align-items-center">Create New Announcement</a>
     </div>
+<!-- Filter Form -->
+<form method="get" action="{% url 'announcements:announcement_list' %}">
+  <label for="author">Filter by Author:</label>
+  <input type="text" name="author" id="author" value="{{ request.GET.author }}">
 
+  <label for="role">Filter by Role:</label>
+  <select name="role" id="role">
+    <option value="">All Roles</option>
+    <option value="GameKeeper" {% if request.GET.role == "Gamekeeper" %}selected{% endif %}>Gamekeeper</option>
+    <option value="Developer" {% if request.GET.role == "Developer" %}selected{% endif %}>Developer</option>
+</select>
+
+  <label for="date">Filter by Date:</label>
+  <input type="date" name="date" id="date" value="{{ request.GET.date }}">
+
+  <button type="submit" class="btn btn-primary">Filter</button>
+  <a href="{% url 'announcements:announcement_list' %}" class="btn btn-secondary">Clear Filters</a>
+</form>
     <div class="row g-4">
       {% for announcement in announcements %}
       <div class="col-12 col-md-6 col-lg-4">
         <div class="card h-100 shadow">
           {% if announcement.image %}
-          <img src="{{ announcement.image.url }}" class="card-img-top" style="height: 200px; object-fit: cover;"
+          <img src="{{ announcement.image.url }}" class="card-img-top" style="height: 150px; object-fit: cover;"
             alt="{{ announcement.title }}" />
           {% else %}
-          <p>No image available</p>
+          <img src="{% static 'path/to/placeholder/image.jpg' %}" class="card-img-top" style="height: 150px; object-fit: cover;"
+            alt="No image available" />
           {% endif %}
           <div class="card-body">
             <h5 class="card-title">{{ announcement.title }}</h5>
@@ -71,6 +90,29 @@
             <small class="text-muted meta-data">
               Author: {{ announcement.author }} | Role: {{ announcement.author.role }} | Date: {{ announcement.created_at }} 
             </small>
+           <!-- Like button
+            <form action="{% url 'announcements:like_announcement' announcement.id %}" method="post" style="display: inline;">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-sm btn-outline-primary">
+                {% if request.user in announcement.likes.all %}
+                Unlike
+                {% else %}
+                Like
+                {% endif %}
+              </button>
+            </form>
+            <span class="text-muted">Likes: {{ announcement.total_likes }}</span>
+             Dislike Button and Dislike Count 
+            <form action="{% url 'announcements:dislike_announcement' announcement.id %}" method="post" style="display: inline;">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-sm btn-outline-danger">
+                {% if request.user in announcement.dislikes.all %}
+                Undislike
+                {% else %}
+                Dislike
+                {% endif %}
+              </button>
+            </form>-->
             <div class="full-content">
               {{ announcement.content }}
             </div>
@@ -138,27 +180,20 @@
       });
     </script>
 
-
-
-
-{% if messages %}
+    {% if messages %}
     <div class="toast-container position-fixed top-0 end-0 p-3">
-        {% for message in messages %}
-            {% if 'success' in message.tags %}
-                <div class="toast show align-items-center text-white bg-success border-0" role="alert">
-            {% elif 'error' in message.tags %}
-                <div class="toast show align-items-center text-white bg-danger border-0" role="alert">
-            {% endif %}
-                <div class="d-flex">
-                    <div class="toast-body">
-                        {{ message }}
-                    </div>
-                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-                </div>
-            </div>
-        {% endfor %}
+      {% for message in messages %}
+      <div class="toast show align-items-center text-white bg-danger border-0" role="alert">
+        <div class="d-flex">
+          <div class="toast-body">
+            {{ message }}
+          </div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+      </div>
+      {% endfor %}
     </div>
-{% endif %}
+    {% endif %}
 </body>
 
 </html>

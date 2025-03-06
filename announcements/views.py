@@ -11,10 +11,25 @@ import os
 from datetime import date
 from django.utils.timezone import now
 
-@login_required
+
 def announcement_list(request):
+    announcements = Announcement.objects.all()
     announcements = Announcement.objects.all().order_by('-created_at')
-    return render(request, 'announcements/announcement_list.html', {'announcements': announcements, 'user_role': request.user.role})
+
+    # Get filter parameters from the request
+    author = request.GET.get('author')
+    role = request.GET.get('role')
+    date = request.GET.get('date')
+
+    # Apply filters
+    if author:
+        announcements = announcements.filter(author__username__icontains=author)
+    if role:
+        announcements = announcements.filter(author__role__icontains=role)
+    if date:
+        announcements = announcements.filter(created_at__date=date)
+
+    return render(request, 'announcements/announcement_list.html', {'announcements': announcements})
 
 @login_required
 def create_announcement(request):
@@ -51,6 +66,46 @@ def event_code_generator(size=32, chars=string.ascii_uppercase + string.digits):
         if Event.objects.filter(event_code=event_code).exists() == False:
             return event_code
 
+@login_required
+def like_announcement(request, announcement_id):
+    announcement = get_object_or_404(Announcement, id=announcement_id)
+    user = request.user
+
+    if user in announcement.likes.all():
+        announcement.likes.remove(user)  # Unlike the announcement
+    else:
+        announcement.likes.add(user)  # Like the announcement
+        announcement.dislikes.remove(user)  # Remove like if the user had liked it
+
+    return redirect('/announcements/', announcement_id=announcement.id)  # Redirect to the announcement detail page
+
+@login_required
+def like_announcement(request, announcement_id):
+    announcement = get_object_or_404(Announcement, id=announcement_id)
+    user = request.user
+
+    if user in announcement.likes.all():
+        announcement.likes.remove(user)  # Unlike the announcement
+    else:
+        announcement.likes.add(user)  # Like the announcement
+        announcement.dislikes.remove(user)  # Remove dislike if the user had disliked it
+
+    # Redirect to the announcement list page
+    return redirect('announcements:announcement_list')
+
+@login_required
+def dislike_announcement(request, announcement_id):
+    announcement = get_object_or_404(Announcement, id=announcement_id)
+    user = request.user
+
+    if user in announcement.dislikes.all():
+        announcement.dislikes.remove(user)  # Remove dislike
+    else:
+        announcement.dislikes.add(user)  # Add dislike
+        announcement.likes.remove(user)  # Remove like if the user had liked it
+
+    # Redirect to the announcement list page
+    return redirect('announcements:announcement_list')
 # View for display_event_code.html. Used to generate QR code for game keepers to display at events for 
 # players to scan to be rewarded for attending. 
 @login_required 

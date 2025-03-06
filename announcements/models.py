@@ -12,13 +12,17 @@ class Announcement(models.Model):
     is_event = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey('accounts.CustomUser', on_delete=models.CASCADE)
+    likes = models.ManyToManyField('accounts.CustomUser', related_name='liked_announcements', blank=True)  # Many-to-many relationship for likes
+    dislikes = models.ManyToManyField('accounts.CustomUser', related_name='disliked_announcements', blank=True) 
 
     def __str__(self):
         return self.title
 
     def get_author_role(self):
         return self.author.role  
-    
+    def total_likes(self):
+        return self.likes.count()
+
 class Event(models.Model):
     announcement = models.OneToOneField(Announcement, on_delete=models.CASCADE)
     currency_reward = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(300)])
@@ -26,6 +30,8 @@ class Event(models.Model):
     event_date = models.DateField()
     event_code = models.TextField(max_length=32)
 
+    def total_likes(self):
+        return self.likes.count()
 
 class EventAttended(models.Model):
     player = models.ForeignKey('accounts.CustomUser', on_delete=models.CASCADE)
