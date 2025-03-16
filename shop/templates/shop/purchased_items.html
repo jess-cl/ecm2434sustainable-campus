@@ -29,6 +29,7 @@
                   <th scope="col">Item</th>
                   <th scope="col">Purchase Date</th>
                   <th scope="col">Status</th>
+                  <th scope="col">Refund</th>
                 </tr>
               </thead>
               <tbody>
@@ -70,6 +71,35 @@
                     </a>
                     {% endif %}
                   </td>
+                  <td> 
+                    {% if purchase.is_digital %}
+                    <span
+                      class="badge bg-secondary rounded-pill px-3 py-1 fs-6 d-inline-block text-truncate"
+                      style="width: 160px"
+                    >
+                      Not Refundable
+                    </span>
+                    {% elif purchase.is_redeemed %}
+                    <span
+                      class="badge bg-secondary rounded-pill px-3 py-1 fs-6 d-inline-block text-truncate"
+                      style="width: 160px"
+                    >
+                      Not Refundable
+                    </span>
+                    {% else %}
+                    <a
+                      href="{% url 'shop:refund_item' purchase.purchase_id %}"
+                      class="text-decoration-none"
+                    >
+                      <span
+                        class="badge bg-success rounded-pill px-3 py-1 fs-6 d-inline-block text-truncate"
+                        style="width: 160px"
+                      >
+                        Refund Item
+                      </span>
+                    </a>
+                    {% endif %}
+                  </td> 
                 </tr>
                 {% endfor %}
               </tbody>

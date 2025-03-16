@@ -5,6 +5,7 @@ from django.db import models
 from django.contrib.auth.models import User  
 
 class Announcement(models.Model):
+    """Represents announcements made by game keepers or developers"""
     title = models.CharField(max_length=200)
     summary = models.TextField(max_length=200)
     content = models.TextField()
@@ -20,19 +21,22 @@ class Announcement(models.Model):
 
     def get_author_role(self):
         return self.author.role  
+      
     def total_likes(self):
         return self.likes.count()
 
+    
 class Event(models.Model):
+    """Represents events to occur, and attached to events"""
     announcement = models.OneToOneField(Announcement, on_delete=models.CASCADE)
     currency_reward = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(300)])
     transaction_description = models.TextField(max_length=200)
     event_date = models.DateField()
     event_code = models.TextField(max_length=32)
 
-    def total_likes(self):
-        return self.likes.count()
 
 class EventAttended(models.Model):
+    """Represents events that players attend"""
     player = models.ForeignKey('accounts.CustomUser', on_delete=models.CASCADE)
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
+

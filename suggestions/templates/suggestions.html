@@ -19,7 +19,19 @@
     </div>
 
     <!-- Suggestion form -->
-    <form>
+    <form method="post">
+         {% csrf_token %}
+         <div class="container mt-4">
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
         <h2>Suggestion:</h2>
 
         <!-- Textarea for suggestion input -->

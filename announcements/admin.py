@@ -16,3 +16,4 @@ class EventAdmin(admin.ModelAdmin):
 class EventAttendedAdmin(admin.ModelAdmin):
     list_display = ('player', 'event')  # Shows player and event attended
     search_fields = ('player__username', 'event__event_code')
+

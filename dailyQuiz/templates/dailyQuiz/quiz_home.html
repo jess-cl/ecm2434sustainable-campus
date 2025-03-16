@@ -1,0 +1,34 @@
+{% extends 'dailyQuiz/base.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% load static %}
+    <title>Sustainable Campus</title>
+    <link rel="stylesheet" href="{% static 'css/navbar.css' %}" />
+    <link href="https://cdn.lineicons.com/5.0/lineicons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static '/bootstrap/css/bootstrap.min.css' %}" />
+</head>
+
+<body>
+
+    <div class="container py-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3 mb-0">Daily Quiz Result</h1>
+        </div>
+
+       <p>welcom to the quiz page where you can do quizzes et by the game keepers.</p>
+
+        <!-- Return to Home Button -->
+        <a href="{% url 'main:map' %}" class="btn-return-home">
+            Return to Home
+        </a>
+    </div>
+
+</body>
+
+{% endblock %}

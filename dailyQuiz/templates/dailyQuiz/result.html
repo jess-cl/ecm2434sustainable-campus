@@ -1,0 +1,106 @@
+{% extends 'dailyQuiz/base.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% load static %}
+    <title>Sustainable Campus</title>
+    <link rel="stylesheet" href="{% static 'css/navbar.css' %}" />
+    <link href="https://cdn.lineicons.com/5.0/lineicons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static '/bootstrap/css/bootstrap.min.css' %}" />
+    <style>
+        /* Custom CSS for additional styling */
+        .result-card {
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .result-card.correct {
+            border-left: 5px solid #28a745; /* Green border for correct answers */
+        }
+        .result-card.incorrect {
+            border-left: 5px solid #dc3545; /* Red border for incorrect answers */
+        }
+        .final-score {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #28a745; /* Green color for the final score */
+        }
+        .streak-info {
+            font-size: 1.2rem;
+            color: #6c757d; /* Gray color for streak info */
+        }
+        .streak-reset {
+            color: #dc3545; /* Red color for streak reset message */
+        }
+        .btn-return-home {
+            background-color: #76c789;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 1.5rem;
+        }
+        .btn-return-home:hover {
+            background-color: #218838;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container py-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3 mb-0">Daily Quiz Result</h1>
+        </div>
+
+        <!-- Display Results for Each Question -->
+        {% for result in results %}
+            <div class="result-card {% if result.correct %}correct{% else %}incorrect{% endif %}">
+                <p class="mb-1"><strong>Question:</strong> {{ result.question.question }}</p>
+                <p class="mb-0">
+                    {% if result.correct %}
+                        <span class="text-success">✅ Correct</span>
+                    {% else %}
+                        <span class="text-danger">❌ Incorrect</span>
+                    {% endif %}
+                </p>
+            </div>
+        {% endfor %}
+
+        <!-- Final Score -->
+        <div class="final-score mt-4">
+            Final Score: {{ score }} / 10
+        </div>
+
+        <!-- Streak Information -->
+        <div class="streak-info mt-3">
+            {% if streak == 0 %}
+                <p class="streak-reset">
+                    Unfortunately, your daily streak has been reset as you scored less than 8 on today's quiz. Keep trying,
+                    and we believe you will get there soon!
+                </p>
+            {% else %}
+                <p>Current streak: {{ streak }} days 🔥</p>
+            {% endif %}
+        </div>
+
+        <!-- Return to Home Button -->
+        <a href="{% url 'main:map' %}" class="btn-return-home">
+            Return to Home
+        </a>
+        
+    </div>
+
+</body>
+
+{% endblock %}

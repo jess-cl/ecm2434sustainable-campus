@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'shop',
     'suggestions',
     'leaderboards',
+    'dailyQuiz',
 ]
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
@@ -58,9 +59,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-SESSION_COOKIE_AGE = 1209600  # 2周（秒）
-SESSION_SAVE_EVERY_REQUEST = True  # 每次请求保存会话
-SESSION_COOKIE_SECURE = True  # 生产环境启用HTTPS
+SESSION_COOKIE_AGE = 1209600
+SESSION_SAVE_EVERY_REQUEST = True
+SESSION_COOKIE_SECURE = True
 
 ROOT_URLCONF = 'sustainableCampus.urls'
 
@@ -133,8 +134,8 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_URL = '/static/'
 STATIC_FILES_DIRS = os.path.join(BASE_DIR, 'static')
 
-MEDIA_URL = '/media/'  
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Emailing settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -152,7 +153,3 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = '/accounts/login/'
 LOGOUT_REDIRECT_URL = '/'
 LOGIN_REDIRECT_URL = '/'
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-

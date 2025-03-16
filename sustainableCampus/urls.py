@@ -27,6 +27,7 @@ urlpatterns = [
     path("shop/", include("shop.urls")),
     path("suggestions/", include("suggestions.urls")),
     path('leaderboards/', include('leaderboards.urls')),
+    path('daily-quiz/', include("dailyQuiz.urls")),
 ]
 
 

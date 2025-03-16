@@ -1,0 +1,140 @@
+{% extends 'dailyQuiz/base.html' %}
+
+{% block content %}
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    {% load static %}
+    <title>Create Quiz Question</title>
+    <link rel="stylesheet" href="{% static 'css/navbar.css' %}" />
+    <link href="https://cdn.lineicons.com/5.0/lineicons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static '/bootstrap/css/bootstrap.min.css' %}" />
+    <style>
+        /* Custom CSS for additional styling */
+        .form-container {
+            background-color: #f8f9fa;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .btn-custom {
+            background-color: #28a745;
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 5px;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+        .btn-custom:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container py-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3 mb-0">Create a New Quiz Question</h1>
+        </div>
+
+        <div class="form-container">
+            <form method="post">
+                {% csrf_token %}
+                
+                <!-- Question Field -->
+                <div class="form-group">
+                    <label for="{{ form.question.id_for_label }}">Question</label>
+                    <textarea 
+                        name="{{ form.question.name }}" 
+                        id="{{ form.question.id_for_label }}" 
+                        class="form-control" 
+                        rows="5" 
+                        placeholder="Enter the question here..."
+                    >{{ form.question.value|default_if_none:'' }}</textarea>
+                </div>
+
+                <!-- Option A Field -->
+                <div class="form-group">
+                    <label for="{{ form.option_a.id_for_label }}">Option A</label>
+                    <input 
+                        type="text" 
+                        name="{{ form.option_a.name }}" 
+                        id="{{ form.option_a.id_for_label }}" 
+                        class="form-control" 
+                        placeholder="Enter Option A"
+                        value="{{ form.option_a.value|default_if_none:'' }}"
+                    >
+                </div>
+
+                <!-- Option B Field -->
+                <div class="form-group">
+                    <label for="{{ form.option_b.id_for_label }}">Option B</label>
+                    <input 
+                        type="text" 
+                        name="{{ form.option_b.name }}" 
+                        id="{{ form.option_b.id_for_label }}" 
+                        class="form-control" 
+                        placeholder="Enter Option B"
+                        value="{{ form.option_b.value|default_if_none:'' }}"
+                    >
+                </div>
+
+                <!-- Option C Field -->
+                <div class="form-group">
+                    <label for="{{ form.option_c.id_for_label }}">Option C</label>
+                    <input 
+                        type="text" 
+                        name="{{ form.option_c.name }}" 
+                        id="{{ form.option_c.id_for_label }}" 
+                        class="form-control" 
+                        placeholder="Enter Option C"
+                        value="{{ form.option_c.value|default_if_none:'' }}"
+                    >
+                </div>
+
+                <!-- Option D Field -->
+                <div class="form-group">
+                    <label for="{{ form.option_d.id_for_label }}">Option D</label>
+                    <input 
+                        type="text" 
+                        name="{{ form.option_d.name }}" 
+                        id="{{ form.option_d.id_for_label }}" 
+                        class="form-control" 
+                        placeholder="Enter Option D"
+                        value="{{ form.option_d.value|default_if_none:'' }}"
+                    >
+                </div>
+
+                <!-- Correct Option Dropdown -->
+                <div class="form-group">
+                    <label for="{{ form.correct_option.id_for_label }}">Correct Option</label>
+                    <select 
+                        name="{{ form.correct_option.name }}" 
+                        id="{{ form.correct_option.id_for_label }}" 
+                        class="form-control"
+                    >
+                        <option value="option_a">Option A</option>
+                        <option value="option_b">Option B</option>
+                        <option value="option_c">Option C</option>
+                        <option value="option_d">Option D</option>
+                    </select>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary px-4">Create Question</button>
+            </form>
+        </div>
+    </div>
+
+</body>
+{% endblock %}

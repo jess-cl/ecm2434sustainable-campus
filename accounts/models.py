@@ -9,6 +9,7 @@ from django.conf import settings
 
 # CustomUser inherits the functions and attributes of AbstactUser
 class CustomUser(AbstractUser):
+    """Represents a user's account"""
     # Ensures the role of player can only be one of three
     ROLES = [
         ('player', 'Player'),
@@ -26,8 +27,9 @@ class CustomUser(AbstractUser):
 
 
 class Profile(models.Model):
+    """Represents a user profile settings"""
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='profile_images/', default='images/default.png')
+    image = models.ImageField(upload_to='profile_images/', default='profile_images/default.png')
 
     def __str__(self):
         return f"{self.user.username}'s Profile"

@@ -1,86 +1,94 @@
-import os
-from datetime import time
-
+from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth import authenticate, login, update_session_auth_hash, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login, update_session_auth_hash
-from .forms import SignUpForm, LoginForm, ChangeUsernameForm
-from django.contrib.auth import logout
 from django.core.mail import send_mail
-from .models import CustomUser
+from django.db import transaction
+from django.shortcuts import render, redirect
+from django.urls import reverse
 from shop.models import UserBalance
 from leaderboards.models import TreeScore
-from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile
-from django.conf import settings
-from django.shortcuts import render, redirect
-from .models import Profile
-from .forms import ProfileImageForm
+from .forms import ProfileImageForm, SignUpForm, LoginForm, ChangeUsernameForm
+from .models import Profile, CustomUser
+from dailyQuiz.models import QuizDailyStreak
 
 
-# Handles data submitted from signup page's form
+
 def signup_page(request):
+    """Allows new users to create accounts. This view handles user registration through 
+       the sign up page's form."""
+    if request.user.is_authenticated:
+        return redirect('main:map')
+
     form = SignUpForm()
 
     # If a form is submitted, the following happens
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
-            # Checks if given email is unique before saving new user data
-            if CustomUser.objects.filter(email=form.cleaned_data["email"]).exists():
-                form.add_error("email", "Email is already in use.")
-            # Saves new user data, and sends email verification
-            else:
-                user = form.save()
-                send_email_verification(user)
-                return redirect('accounts:login')
+            user = form.save()
+            send_email_verification(request, user)
+            messages.success(request, "You have successfully created a new account, please check your email for a verification link!")
+            return redirect('accounts:login')
+    
 
     context = {'form': form}
     return render(request, 'accounts/signup.html', context)
 
 
-# Sends an verification email with a link to the new user
-def send_email_verification(user):
+
+def send_email_verification(request, user: CustomUser) -> None:
+    """Sends an verification email link to the new user"""
     subject = "Email Verification for Sustainable Campus"
-    link = f"http://127.0.0.1:8000/accounts/email_verification/{user.verification_token}"
+    link = request.build_absolute_uri(reverse('accounts:email_verification', args=[user.verification_token]))
     message = f"Hello {user.first_name}, \n\nPlease verify your email through the following link below:\n{link}\n\nThank You!"
     sender = settings.EMAIL_HOST_USER  # Sender of email is stored in settings.py
     receiver = [user.email]
-
+    
     send_mail(subject, message, sender, receiver)
 
 
-# Determines what happens when the verification link is clicked
-def email_verification(request, token):
-    # Retrieves user data using given verification token, returns error if invalid
+
+def email_verification(request, token: str):
+    """Handles email verification when the verification link is clicked for a new account"""
+
+    # Retrieves user data using given verification token, returns error message if invalid
     try:
         user = CustomUser.objects.get(verification_token=token)
     except CustomUser.DoesNotExist:
         messages.error(request, "Invalid or expired verification token")
         return redirect('accounts:signup')
 
-    # Verifies user if they are unverified, and creates user balance for account
+    # Verifies the user if the token matches an account
     if user.verified == False:
         user.verified = True
         user.save()
 
         # Creates a user balance for player
-        UserBalance.objects.create(user_id=user, currency=100)
+        UserBalance.objects.create(user_id=user)
 
         # Creates a score counter for the tree game for player
         TreeScore.objects.create(user=user)
 
-        messages.success(request, "User has now been verified, you can now log in.")
+
+        QuizDailyStreak.objects.create(user=user)
+  
+        messages.success(request, "Your account has now been verified, you can now log in.")
     else:
-        messages.error(request, "User is already verified")
+        messages.error(request, "This account has already been verified.")
 
     return redirect('accounts:login')
 
 
-# Handles data submitted by login page's form
+
 def login_page(request):
+    """Allows users to login into the website. Handles user login through the login page's form."""
+
+    # Redirect users who have already logged in
+    if request.user.is_authenticated:
+        return redirect('main:map')  
+
     form = LoginForm(request)
 
     if request.method == 'POST':
@@ -96,13 +104,18 @@ def login_page(request):
                     login(request, user)
                     return redirect('main:map')
                 else:
-                    form.add_error(None, 'Invalid username or password')
+                    messages.error(request, 'Your account has not been verified.')
             else:
-                form.add_error(None, 'Invalid username or password')
-    return render(request, 'accounts/login.html', {'form': form})
+                messages.error(request, 'Invalid username or password')
+        else:
+            messages.error(request, 'Invalid username or password')
+
+    context = {'form': form}
+    return render(request, 'accounts/login.html', context)
 
 
 def logout_view(request):
+    """Used for logging users out"""
     logout(request)
     messages.success(request, "Log out successfully")
     return redirect("accounts:login")
@@ -110,6 +123,7 @@ def logout_view(request):
 
 @login_required
 def profile_page(request):
+    """Displays info about a users profile"""
     # Ensure user has a profile
     if not hasattr(request.user, 'profile'):
         Profile.objects.create(user=request.user)
@@ -122,7 +136,7 @@ def profile_page(request):
         'form_image': ProfileImageForm(instance=request.user.profile)
     }
 
-    #For test: print(f"DEBUG - Current User: {request.user.username}")
+    # For test: print(f"DEBUG - Current User: {request.user.username}")
     return render(request, 'accounts/profile.html', context)
 
 
@@ -232,3 +246,43 @@ def change_profile_image(request):
         form = ProfileImageForm()
 
     return render(request, 'accounts/change_profile_image.html', {'form': form})
+
+
+@login_required
+def delete_account(request):
+    if request.method == 'POST':
+        try:
+            user = request.user
+            password = request.POST.get('delete_password', '')
+
+            if not user.check_password(password):
+                messages.error(request, '密码验证失败')
+                return redirect('accounts:profile')
+
+            # 手动清理所有可能关联数据
+            with transaction.atomic():
+                # 清理用户点赞记录
+                # if 'announcements' in settings.INSTALLED_APPS:
+                #     from announcements.models import Announcement
+                    # Announcement.objects.filter(likes=user).update(likes=user)
+                    # user.liked_announcements.clear()
+
+                # 清理其他关联数据
+                UserBalance.objects.filter(user_id=user).delete()
+                TreeScore.objects.filter(user=user).delete()
+
+                # 执行登出
+                logout(request)
+
+                # 删除用户
+                user.delete()
+
+            messages.success(request, '账号已永久删除')
+            return redirect('accounts:login')
+
+        except Exception as e:
+            messages.error(request, f'删除失败: {str(e)}')
+            return redirect('accounts:profile')
+
+    return redirect('accounts:profile')
+

@@ -1,0 +1,63 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Add New Item to Shop</title>
+        <link href="https://cdn.lineicons.com/5.0/lineicons.css" rel="stylesheet" />
+        <link
+            href="{% static '/bootstrap/css/bootstrap.min.css' %}"
+            rel="stylesheet"
+        />
+    </head>
+    <body>
+    {% include 'navbar.html' %}
+    
+    <div class="container mt-4">
+        <h1 class="h3 mb-4">Add New Item to Shop</h1>
+      
+        {% if messages %}
+            <div class="mt-3">
+                {% for message in messages %}
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="name" class="form-label">Item Name</label>
+                <input type="text" class="form-control" id="name" name="name" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="currency_cost" class="form-label">Currency Cost</label>
+                <input type="number" class="form-control" id="currency_cost" name="currency_cost" min="1" required>
+            </div>
+
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="is_digital" name="is_digital">
+                <label class="form-check-label" for="is_digital">Is this item digital?</label>
+            </div>
+
+            <div class="mb-3">
+                <label for="image" class="form-label">Item Image</label>
+                <input type="file" class="form-control" id="image" name="image" accept="image/*">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Add Item</button>
+        </form>
+    </div>
+
+        <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    </body>
+</html>

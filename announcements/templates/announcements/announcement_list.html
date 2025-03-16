@@ -2,199 +2,282 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  {% load static %}
-  <title>Sustainable Campus</title>
-  <link rel="stylesheet" href="/static/css/announcement_list.css" />
-  <link rel="stylesheet" href="{% static 'css/navbar.css' %}" />
-  <link href="https://cdn.lineicons.com/5.0/lineicons.css" rel="stylesheet" />
-  <link rel="stylesheet" href="{% static '/bootstrap/css/bootstrap.min.css' %}" />
-  <style>
-    .card {
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% load static %}
+    <title>Sustainable Campus</title>
+    <link rel="stylesheet" href="/static/css/announcement_list.css" />
+    <link rel="stylesheet" href="{% static 'css/navbar.css' %}" />
+    <link href="https://cdn.lineicons.com/5.0/lineicons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static '/bootstrap/css/bootstrap.min.css' %}" />
+    <style>
+        .card {
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
 
-    .card:hover {
-      transform: translateY(-5px);
-    }
+        .card:hover {
+            transform: translateY(-5px);
+        }
 
-    .modal-img {
-  max-height: 400px; 
-  object-fit: contain; 
-  width: 100%;
-}
+        .modal-img {
+            max-height: 400px;
+            object-fit: contain;
+            width: 100%;
+        }
 
-    .full-content {
-      display: none;
-    }
-    .event-link {
-      display: none;
-    }
-  </style>
+        .full-content {
+            display: none;
+        }
+
+        .event-link {
+            display: none;
+        }
+    </style>
 </head>
 
 <body>
-  {% include 'navbar.html' %}
+    {% include 'navbar.html' %}
 
-  <div class="container py-5">
-
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <h1 class="h3 mb-0">Announcements</h1>
-      <a href="{% url 'announcements:create_announcement' %}"
-        class="btn btn-outline-success p-2 lh-1 d-flex align-items-center">Create New Announcement</a>
-    </div>
-<!-- Filter Form -->
-<form method="get" action="{% url 'announcements:announcement_list' %}">
-  <label for="author">Filter by Author:</label>
-  <input type="text" name="author" id="author" value="{{ request.GET.author }}">
-
-  <label for="role">Filter by Role:</label>
-  <select name="role" id="role">
-    <option value="">All Roles</option>
-    <option value="GameKeeper" {% if request.GET.role == "Gamekeeper" %}selected{% endif %}>Gamekeeper</option>
-    <option value="Developer" {% if request.GET.role == "Developer" %}selected{% endif %}>Developer</option>
-</select>
-
-  <label for="date">Filter by Date:</label>
-  <input type="date" name="date" id="date" value="{{ request.GET.date }}">
-
-  <button type="submit" class="btn btn-primary">Filter</button>
-  <a href="{% url 'announcements:announcement_list' %}" class="btn btn-secondary">Clear Filters</a>
-</form>
-    <div class="row g-4">
-      {% for announcement in announcements %}
-      <div class="col-12 col-md-6 col-lg-4">
-        <div class="card h-100 shadow">
-          {% if announcement.image %}
-          <img src="{{ announcement.image.url }}" class="card-img-top" style="height: 150px; object-fit: cover;"
-            alt="{{ announcement.title }}" />
-          {% else %}
-          <img src="{% static 'path/to/placeholder/image.jpg' %}" class="card-img-top" style="height: 150px; object-fit: cover;"
-            alt="No image available" />
-          {% endif %}
-          <div class="card-body">
-            <h5 class="card-title">{{ announcement.title }}</h5>
-            <p class="card-text">
-              {{ announcement.summary }}
-            </p>
-            {% if announcement.is_event and user_role == 'gameKeeper' or user_role == 'developer' %}
-            <div class="event-link">
-              <a href="{% url 'announcements:display_event_qr_code' announcement.event.event_code %}" 
-                class="btn btn-primary">Display Event's QR Code</a>
-            </div>
-            {% endif %}
-
-
-            <small class="text-muted meta-data">
-              Author: {{ announcement.author }} | Role: {{ announcement.author.role }} | Date: {{ announcement.created_at }} 
-            </small>
-            {% comment %}
-            <!-- Like button -->
-            <form action="{% url 'announcements:like_announcement' announcement.id %}" method="post" style="display: inline;">
-              {% csrf_token %}
-              <button type="submit" class="btn btn-sm btn-outline-primary">
-                {% if request.user in announcement.likes.all %}
-                  Unlike
-                {% else %}
-                  Like
-                {% endif %}
-              </button>
-            </form>
-            <span class="text-muted">Likes: {{ announcement.total_likes }}</span>
-            
-            <!-- Dislike Button and Dislike Count -->
-            <form action="{% url 'announcements:dislike_announcement' announcement.id %}" method="post" style="display: inline;">
-              {% csrf_token %}
-              <button type="submit" class="btn btn-sm btn-outline-danger">
-                {% if request.user in announcement.dislikes.all %}
-                  Undislike
-                {% else %}
-                  Dislike
-                {% endif %}
-              </button>
-            </form>
-            {% endcomment %}
-            <div class="full-content">
-              {{ announcement.content }}
-            </div>
-          </div>
+    <div class="container py-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3 mb-0">Announcements</h1>
+            <a href="{% url 'announcements:create_announcement' %}"
+                class="btn btn-outline-success p-2 lh-1 d-flex align-items-center">Create New Announcement</a>
         </div>
-      </div>
-      {% endfor %}
-    </div>
 
-    <!-- Announcement Modal -->
-    <div class="modal fade" id="announcementModal" tabindex="-1">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="modalTitle"></h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-          </div>
-          <div class="modal-body">
-            <img src="" class="modal-img img-fluid mb-3 w-100" id="modalImage" />
-            <p id="modalContent"></p>
-          </div>
-          <div class="modal-footer justify-content-between">
-            <small class="text-muted" id="modalMetaData"></small>
-            <div id="modalEventLink"></div>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-              Close
-            </button>
-          </div>
+        <!-- Filter Form -->
+        <form method="get" action="{% url 'announcements:announcement_list' %}" class="mb-4 p-4 bg-light border rounded">
+            <div class="row g-3 align-items-end">
+                <!-- Filter by Author -->
+                <div class="col-md-3">
+                    <label for="author" class="form-label">Filter by Author:</label>
+                    <input type="text" name="author" id="author" class="form-control" value="{{ request.GET.author }}"
+                           placeholder="Enter author name">
+                </div>
+
+                <!-- Filter by Role -->
+                <div class="col-md-2">
+                    <label for="role" class="form-label">Filter by Role:</label>
+                    <select name="role" id="role" class="form-select">
+                        <option value="">All Roles</option>
+                        <option value="GameKeeper" {% if request.GET.role == "Gamekeeper" %}selected{% endif %}>Gamekeeper</option>
+                        <option value="Developer" {% if request.GET.role == "Developer" %}selected{% endif %}>Developer</option>
+                    </select>
+                </div>
+
+                <!-- Filter by Date -->
+                <div class="col-md-2">
+                    <label for="date" class="form-label">Filter by Date:</label>
+                    <input type="date" name="date" id="date" class="form-control" value="{{ request.GET.date }}">
+                </div>
+
+                <!-- Sort by Oldest/Newest -->
+                <div class="col-md-2">
+                    <label for="sort" class="form-label">Sort by:</label>
+                    <select name="sort" id="sort" class="form-select">
+                        <option value="">Default</option>
+                        <option value="newest" {% if request.GET.sort == "newest" %}selected{% endif %}>Newest First</option>
+                        <option value="oldest" {% if request.GET.sort == "oldest" %}selected{% endif %}>Oldest First</option>
+                    </select>
+                </div>
+
+                <!-- Filter and Clear Buttons -->
+                <div class="col-md-3 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary me-2">Filter</button>
+                    <a href="{% url 'announcements:announcement_list' %}" class="btn btn-secondary">Clear Filters</a>
+                </div>
+            </div>
+        </form>
+
+        <div class="row g-4">
+            {% for announcement in announcements %}
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card h-100 shadow" 
+                     data-title="{{ announcement.title }}" 
+                     data-content="{{ announcement.content }}" 
+                     data-author="{{ announcement.author }}" 
+                     data-role="{{ announcement.author.role }}" 
+                     data-date="{{ announcement.created_at|date:'M d, Y' }}" 
+                     data-image="{% if announcement.image %}{{ announcement.image.url }}{% else %}{% static 'path/to/placeholder/image.jpg' %}{% endif %}"
+                     data-is-event="{% if announcement.is_event %}true{% else %}false{% endif %}"
+                     data-event-code="{% if announcement.is_event %}{{ announcement.event.event_code }}{% endif %}">
+                    
+                    <!-- Card Image -->
+                    {% if announcement.image %}
+                    <img src="{{ announcement.image.url }}" class="card-img-top" style="height: 150px; object-fit: cover;"
+                        alt="{{ announcement.title }}" />
+                    {% else %}
+                    <img src="{% static 'path/to/placeholder/image.jpg' %}" class="card-img-top" style="height: 150px; object-fit: cover;"
+                        alt="No image available" />
+                    {% endif %}
+                    
+                    <!-- Card Body -->
+                    <div class="card-body">
+                        <h5 class="card-title">{{ announcement.title }}</h5>
+                        <p class="card-text">
+                            {{ announcement.summary }}
+                        </p>
+                        {% if announcement.is_event and user_role == 'gameKeeper' or user_role == 'developer' %}
+                        <a href="{% url 'announcements:display_event_qr_code' announcement.event.event_code %}"
+                          class="btn btn-primary mt-2">Display Event's QR Code</a>
+                        {% endif %}
+                        <!-- Metadata Section -->
+                        <div class="d-flex flex-wrap gap-2 align-items-center mb-2">
+                            <!-- Author -->
+                            <small class="text-muted">
+                                <i class="lni lni-user"></i> <!-- User icon -->
+                                <span class="badge bg-secondary">Author: {{ announcement.author }}</span>
+                            </small>
+
+                            <!-- Role -->
+                            <small class="text-muted">
+                                <i class="lni lni-briefcase"></i> <!-- Role icon -->
+                                <span class="badge bg-info">
+                                    Role: 
+                                    {% if announcement.author.role == "gameKeeper" %}
+                                        game keeper
+                                    {% else %}
+                                        {{ announcement.author.role|default_if_none:"" }}
+                                    {% endif %}
+                                </span>
+                            </small>
+
+                            <!-- Date -->
+                            <small class="text-muted">
+                                <i class="lni lni-calendar"></i> <!-- Calendar icon -->
+                                <span class="badge bg-success">Date: {{ announcement.created_at|date:"M d, Y" }}</span>
+                            </small>
+                        </div>
+
+                        <!-- Like and Dislike Buttons -->
+                        <form action="{% url 'announcements:like_announcement' announcement.id %}" method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-outline-primary">
+                                {% if request.user in announcement.likes.all %}
+                                    Unlike
+                                {% else %}
+                                    Like
+                                {% endif %}
+                            </button>
+                        </form>
+                        <span class="text-muted">Likes: {{ announcement.total_likes }}</span>
+
+                        <form action="{% url 'announcements:dislike_announcement' announcement.id %}" method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                {% if request.user in announcement.dislikes.all %}
+                                    Undislike
+                                {% else %}
+                                    Dislike
+                                {% endif %}
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
         </div>
-      </div>
+
+        <!-- Announcement Modal -->
+        <div class="modal fade" id="announcementModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalTitle"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Modal Image -->
+                        <img src="" class="modal-img img-fluid mb-3 w-100" id="modalImage" alt="Announcement Image" />
+
+                        <!-- Modal Content -->
+                        <p id="modalContent"></p>
+
+                        <!-- Additional Information -->
+                        <div class="mt-4">
+                            <p><strong>Author:</strong> <span id="modalAuthor"></span></p>
+                            <p><strong>Role:</strong> <span id="modalRole"></span></p>
+                            <p><strong>Date:</strong> <span id="modalDate"></span></p>
+                        </div>
+
+                        <!-- QR Code Button (Hidden by Default) -->
+                        <div id="modalQrCodeButton" class="mt-3" style="display: none;">
+                            <a href="#" class="btn btn-primary">Display Event's QR Code</a>
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <small class="text-muted" id="modalMetaData"></small>
+                        <div id="modalEventLink"></div>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bootstrap JS -->
+        <script src="{% static '/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const cards = document.querySelectorAll(".card");
+                const modal = new bootstrap.Modal(document.getElementById("announcementModal"));
+
+                cards.forEach((card) => {
+                    card.addEventListener("click", () => {
+                        // Extract data from card attributes
+                        const title = card.getAttribute("data-title");
+                        const content = card.getAttribute("data-content");
+                        const author = card.getAttribute("data-author");
+                        const role = card.getAttribute("data-role");
+                        const date = card.getAttribute("data-date");
+                        const image = card.getAttribute("data-image");
+                        const isEvent = card.getAttribute("data-is-event") === "true";
+                        const eventCode = card.getAttribute("data-event-code");
+
+                        // Update modal content
+                        document.getElementById("modalTitle").textContent = title;
+                        document.getElementById("modalContent").textContent = content;
+                        document.getElementById("modalImage").src = image;
+                        document.getElementById("modalAuthor").textContent = author;
+                        document.getElementById("modalRole").textContent = role;
+                        document.getElementById("modalDate").textContent = date;
+
+                        // Show or hide the QR code button based on whether it's an event
+                        const qrCodeButton = document.getElementById("modalQrCodeButton");
+                        if (isEvent) {
+                            qrCodeButton.style.display = "block";
+                            qrCodeButton.querySelector("a").href = `/events/qr-code/${eventCode}/`; // Update the link to the QR code page
+                        } else {
+                            qrCodeButton.style.display = "none";
+                        }
+
+                        // Show the modal
+                        modal.show();
+                    });
+                });
+            });
+        </script>
     </div>
 
-    <!-- Bootstrap JS -->
-    <script src="{% static '/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const cards = document.querySelectorAll(".card");
-        const modal = new bootstrap.Modal(
-          document.getElementById("announcementModal")
-        );
-
-        cards.forEach((card) => {
-          card.addEventListener("click", () => {
-            // Extract data from card elements
-            const title = card.querySelector(".card-title").textContent;
-            const content = card.querySelector(".full-content").textContent;
-            const meta_data = card.querySelector(".meta-data").textContent;
-            const image = card.querySelector("img").src;
-            let eventLink = "";
-            if (card.querySelector(".event-link")) {
-              eventLink = card.querySelector(".event-link").innerHTML;
-            }
-
-            // Update modal content
-            document.getElementById("modalTitle").textContent = title;
-            document.getElementById("modalContent").textContent = content;
-            document.getElementById("modalMetaData").textContent = meta_data;
-            document.getElementById("modalImage").src = image;
-            document.getElementById("modalEventLink").innerHTML = eventLink;
-
-            // Show modal
-            modal.show();
-          });
-        });
-      });
-    </script>
-
+    <!-- Toast Messages -->
     {% if messages %}
     <div class="toast-container position-fixed top-0 end-0 p-3">
-      {% for message in messages %}
-      <div class="toast show align-items-center text-white bg-danger border-0" role="alert">
-        <div class="d-flex">
-          <div class="toast-body">
-            {{ message }}
-          </div>
-          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-        </div>
-      </div>
-      {% endfor %}
+        {% for message in messages %}
+            {% if 'success' in message.tags %}
+                <div class="toast show align-items-center text-white bg-success border-0" role="alert">
+            {% elif 'error' in message.tags %}
+                <div class="toast show align-items-center text-white bg-danger border-0" role="alert">
+            {% endif %}
+                <div class="d-flex">
+                    <div class="toast-body">
+                        {{ message }}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            </div>
+        {% endfor %}
     </div>
     {% endif %}
 </body>

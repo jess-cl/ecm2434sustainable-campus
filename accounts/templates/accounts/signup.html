@@ -12,28 +12,30 @@
 <div class="left-panel">
     <h2>Sign Up</h2>
     <!-- Show the error message returned by the backend -->
-    {% if form.errors %}
-        <div class="alert alert-danger">
-            {% for field in form %}
-                {% for error in field.errors %}
-                    <p>{{ error }}</p>
-                {% endfor %}
-            {% endfor %}
-        {% for error in form.non_field_errors %}
-            <p>{{ error }}</p>
-        {% endfor %}
-      </div>
-    {% endif %}
     <div class="mt-0">
         <form id="signupForm" method="POST" action="{% url 'accounts:signup' %}">
             {% csrf_token %}
             <div class="mb-3">
                 <label for="id_username">Username:</label>
                 <input type="text" class="form-control" name="username" id="id_username" placeholder="Username" required>
+                {% if form.username.errors %}
+                    <div class="text-danger">
+                        {% for error in form.username.errors %}
+                            <small>{{ error }}</small>
+                        {% endfor %}
+                    </div>
+                {% endif %}
             </div>
             <div class="mb-3">
                 <label for="id_email">Email:</label>
                 <input type="email" class="form-control" name="email" id="id_email" placeholder="Email" required>
+                {% if form.email.errors %}
+                    <div class="text-danger">
+                        {% for error in form.email.errors %}
+                            <small>{{ error }}</small>
+                        {% endfor %}
+                    </div>
+                {% endif %}
             </div>
             <div class="mb-3">
                 <label for="id_first_name">First Name:</label>
@@ -46,6 +48,13 @@
             <div class="mb-3">
                 <label for="id_password1">Password:</label>
                 <input type="password" class="form-control" name="password1" id="id_password1" placeholder="Password" required>
+                {% if form.password2.errors %}
+                    <div class="text-danger">
+                        {% for error in form.password2.errors %}
+                            <small>{{ error }}</small>
+                        {% endfor %}
+                    </div>
+                {% endif %}
             </div>
             <div class="mb-3">
                 <label for="id_password2">Confirm Password:</label>

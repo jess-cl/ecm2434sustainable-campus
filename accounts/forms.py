@@ -1,16 +1,19 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from .models import CustomUser, Profile
-from django.contrib import messages
-from django.shortcuts import render, redirect
 from .models import CustomUser
-import re
+
 
 
 class SignUpForm(UserCreationForm):
+    error_messages = {
+        'password_mismatch': "The passwords you provided do not match. Please try again."
+    }
+
     class Meta:
         model = CustomUser
         fields = ['username', 'email', 'first_name', 'last_name', 'password1', 'password2']
+
 
     def clean_email(self):
         email = self.cleaned_data.get('email')

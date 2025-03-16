@@ -38,11 +38,13 @@
           >
             <i class="lni lni-wallet-1 me-1"></i> Purchased Items
           </a>
-          <span
-            class="badge bg-primary fs-6 p-2 lh-1 d-flex align-items-center"
-          >
-            Balance: {{user_balance.currency }} points
-          </span>
+          {% if user.role == "player" %}
+            <span
+              class="badge bg-primary fs-6 p-2 lh-1 d-flex align-items-center"
+            >
+              Balance: {{ user_balance.currency }} points
+            </span>
+          {% endif %}
         </div>
       </div>
 
@@ -84,12 +86,23 @@
                 <span class="badge bg-warning text-dark fs-6 p-2 lh-1 d-flex align-items-center">
                   {{ item.currency_cost }} points
                 </span>
-                <a
-                  href="{% url 'shop:buy_shop_item' item_id=item.item_id %}"
-                  class="btn btn-success p-2 lh-1 d-flex align-items-center"
-                >
-                  <i class="lni lni-cart-1"></i> Buy
-                </a>
+                {% if user.role == 'player' %}
+                  <a
+                    href="{% url 'shop:buy_shop_item' item_id=item.item_id %}"
+                    class="btn btn-success p-2 lh-1 d-flex align-items-center"
+                    onclick="return confirmRemoval('Are you sure you want to buy this item?')"
+                  >
+                    <i class="lni lni-cart-1"></i> Buy
+                  </a>
+                {% else %}
+                  <a
+                    href="{% url 'shop:remove_shop_item' item_id=item.item_id %}"
+                    class="btn btn-success p-2 lh-1 d-flex align-items-center"
+                    onclick="return confirmRemoval('Are you sure you want to remove this item?')"
+                  >
+                    <i class="lni lni-cart-1"></i> Remove
+                  </a>
+                {% endif %}
               </div>
             </div>
           </div>

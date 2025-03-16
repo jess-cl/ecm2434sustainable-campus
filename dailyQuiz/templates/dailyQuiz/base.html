@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% load static %}
+    <title>Sustainable Campus</title>
+    <link rel="stylesheet" href="/static/css/announcement_list.css" />
+    <link rel="stylesheet" href="{% static 'css/navbar.css' %}" />
+    <link href="https://cdn.lineicons.com/5.0/lineicons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static '/bootstrap/css/bootstrap.min.css' %}" />
+</head>
+
+<body>
+    {% include 'navbar.html' %}
+
+    <!-- Tabs Section -->
+    <div class="container mt-3">
+        <ul class="nav nav-tabs justify-content-center">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'dailyQuiz:quiz' %}">Daily Quiz(Player)</a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link " href="{% url 'dailyQuiz:create_question' %}">create question(Game keeper)</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="{% url 'dailyQuiz:list_questions' %}">Question list(Game keeper)</a>
+            </li>
+            
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        {% block content %}
+        <!-- Content from child templates will go here -->
+        {% endblock %}
+    </div>
+
+    
+
+    <script src="{% static '/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+
+    {% if messages %}
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+
+        {% for message in messages %}
+            {% if 'success' in message.tags %}
+                <div class="toast show align-items-center text-white bg-success border-0" role="alert">
+            {% elif 'error' in message.tags %}
+                <div class="toast show align-items-center text-white bg-danger border-0" role="alert">
+            {% endif %}
+                <div class="d-flex">
+                    <div class="toast-body">
+                        {{ message }}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            </div>
+        {% endfor %}
+
+    </div>
+    {% endif %}
+</body>
+
+
+</html>

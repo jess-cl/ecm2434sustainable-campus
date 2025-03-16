@@ -14,5 +14,10 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('password_reset/',views.password_reset,name='password_reset'),
     path('change-profile-image/', views.change_profile_image, name='change_profile_image'),
+    path('delete_account/', views.delete_account, name='delete_account'),
 
 ]
+from django.conf import settings
+from django.conf.urls.static import static
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_URL)
