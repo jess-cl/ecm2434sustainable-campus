@@ -212,54 +212,52 @@
     max-width: 48vw;
 }
 
-@media (prefers-reduced-motion: no-preference) {
 
-    .forest-popup {
-        display: none;
-        position: fixed;
-        top: max(15vh, 140px);
-        height: 60vw;
-        max-height: 65vh;
-        min-height: 45vh;
-        right: 5px;
-        width: 25%;
-        min-width: 200px;
-        max-width: 50vw;
-        background-color: #f1f1f1;
-        border-radius: 10px;
-        animation: popup-enter 0.5s;
-        z-index: 21;
-    }
+.forest-popup {
+    display: none;
+    position: fixed;
+    top: max(15vh, 140px);
+    height: 60vw;
+    max-height: 65vh;
+    min-height: 45vh;
+    right: 5px;
+    width: 25%;
+    min-width: 200px;
+    max-width: 50vw;
+    background-color: #f1f1f1;
+    border-radius: 10px;
+    animation: popup-enter 0.5s;
+    z-index: 21;
+}
 
-    .button-popup {
-        display: none;
-        position: fixed;
-        top: max(15vh, 140px);
-        height: 60vw;
-        max-height: 65vh;
-        min-height: 45vh;
-        left: 5px;
-        width: 25%;
-        min-width: 200px;
-        max-width: 50vw;
-        background-color: #f1f1f1;
-        border-radius: 10px;
-        animation: popup-enter 0.5s;
-        z-index: 21;
-    }
+.button-popup {
+    display: none;
+    position: fixed;
+    top: max(15vh, 140px);
+    height: 60vw;
+    max-height: 65vh;
+    min-height: 45vh;
+    left: 5px;
+    width: 25%;
+    min-width: 200px;
+    max-width: 50vw;
+    background-color: #f1f1f1;
+    border-radius: 10px;
+    animation: popup-enter 0.5s;
+    z-index: 21;
+}
 
-    #recycling-popup {
-        display: none;
-        position: fixed;
-        top: 120px;
-        bottom: 100px;
-        left: 10%;
-        width: 80%;
-        background-color: #f1f1f1da;
-        border-radius: 10px;
-        animation: recycling-enter 0.5s;
-        z-index: 21;
-    }
+#recycling-popup {
+    display: none;
+    position: fixed;
+    top: 120px;
+    bottom: 100px;
+    left: 10%;
+    width: 80%;
+    background-color: #f1f1f1da;
+    border-radius: 10px;
+    animation: recycling-enter 0.5s;
+    z-index: 21;
 }
 
 .litter {
