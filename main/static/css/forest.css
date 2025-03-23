@@ -55,7 +55,7 @@
     position: absolute;
     top: min(27%, max(18vw, 12.5vh));
     right: 0;
-    width: 50%;
+    width: 50.0011%; // added because on larger screens, the backgrounds don't meet
     min-height: 73%;
     max-height: 81%;
     height: 85%;
