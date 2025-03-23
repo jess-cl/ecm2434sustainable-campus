@@ -134,30 +134,33 @@
     </div>
 
 
-    <div class="forest-popup" id="empty-popup">
-      <div class="popup-title">
-        <div id="close-empty-popup" class="close-popup">
+    <div class="card forest-popup" id="empty-popup" style="display: none;">
+      <div class="card-header d-flex justify-content-between align-items-center p-2">
+        <!--<div id="close-empty-popup" class="close-popup">
           <i class="bi bi-x"
             style="width: 100%; height: 100%; display: inline-block; font-size: max(4vw, 40px);"></i>
         </div>
-        <div style="font-size: max(2.5vw, 25px);">Select plant</div>
+        <div style="font-size: max(2.5vw, 25px);">Select plant</div>-->
+        <h3 class="card-title">Select plant</h3>
+        <button type="button" class="btn-close" id="close-empty-popup"></button>
       </div>
 
-      <div style="position: absolute; top: max(4vw, 40px);  bottom: 0px; width: 100%; display: unset;">
-        <div class="popup-grid-container" id="plant-selection-grid" style="bottom: calc(30px + max(70px, 7vw));">
+      <div class="card-body p-2 mt-1">
+        <!--<div class="popup-grid-container" id="plant-selection-grid" style="bottom: calc(30px + max(70px, 7vw));">
+        </div>-->
+        <div class="" style="height: 225px;">
+          <div class="mh-100 m-2 d-flex flex-wrap overflow-y-scroll" id="plant-selection-grid">
+  
+          </div>
         </div>
 
-        <div id="plant-details"
-          style="position: absolute; bottom: 0; height: calc(100px + max(50px, 5vw)); width: 90%; left: 5%;">
-          <label id="selected-plant-name"
-            style="position: absolute; bottom: calc(40px + max(35px, 3.5vw)); left: 5%; font-size: max(2vw, 20px);">Select
-            a plant</label>
-          <label id="selected-seed-resource"
-            style="position: absolute; bottom: calc(30px + max(25px, 2.5vw)); left: 5%; font-size: max(1.5vw, 15px);">Plant
-            Resource: </label>
-          <button disabled type="button"
-            style="position: absolute; bottom: 5px; left: 5%; font-size:max(2vw, 20px); width: 90%; vertical-align: middle;"
-            id="plant-selected-button" class="btn btn-primary d-flex text-center">Select Plant</button>
+        <div id="plant-details">
+          <h5 id="selected-plant-name">Select a plant</h5>
+          <p id="selected-seed-resource">Plant Resource: </p>
+          <div class="d-grid gap-2">
+            <button disabled type="button"
+              id="plant-selected-button" class="btn btn-primary">Select Plant</button>
+          </div>
         </div>
       </div>
     </div>

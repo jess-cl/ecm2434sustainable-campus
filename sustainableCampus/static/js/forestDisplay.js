@@ -301,7 +301,7 @@ function generatePlantSelectionGrid(cols) {
         //creating selection cells
         let gridCell = document.createElement("div");
         const addedCell = gridContainer.appendChild(gridCell);
-        addedCell.className = "popup-grid-item";
+        addedCell.className = "card col-lg-3 m-1 bg-light";
 
         addedCell.id = "plant-selection-cell-" + i;
         addedCell.selectedPlantId = plantArray[i][0];
@@ -313,16 +313,17 @@ function generatePlantSelectionGrid(cols) {
 
         //getting images of plants
         const cellImage = addedCell.appendChild(document.createElement("img"));
-        cellImage.classList = "contained-image";
+        cellImage.className = "object-fit-cover";
         cellImage.src = media_url + "forest_assets/id" + addedCell.selectedPlantId + "_2.png";
         if (userSeedInv[i] == 0) {
             addedCell.style.border = "2px dashed rgba(109, 109, 109, 0.34)";
         }
 
-        let plantCount = addedCell.appendChild(document.createElement("label"));
+        let plantCount = addedCell.appendChild(document.createElement("div"));
+        plantCount.className = "position-absolute translate-middle badge rounded-pill bg-primary";
+        plantCount.style = "top: 16px; left: 24px;";
         plantCount.id = "plant-count-" + i;
         plantCount.innerHTML = "x" + userSeedInv[i];
-        plantCount.style = "font-size: max(1.5vw, 15px);";
 
         let plantButton = document.getElementById("plant-selected-button");
         plantButton.selectedPlantId = addedCell.selectedPlantId;
