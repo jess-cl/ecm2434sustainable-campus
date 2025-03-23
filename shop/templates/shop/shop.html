@@ -28,7 +28,12 @@
             <span
               class="badge bg-primary fs-6 p-2 lh-1 d-flex align-items-center"
             >
-              Balance: {{ user_balance.currency }} points
+              Balance: {{ user_balance.currency }} 
+              <img
+                src="{% static '/images/coin.png' %}"
+                width="20"
+                class="ms-1"
+              />
             </span>
           {% else %}
             <a
