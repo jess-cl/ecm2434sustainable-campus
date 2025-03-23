@@ -329,15 +329,29 @@ function generatePlantSelectionGrid(cols) {
     }
 }
 
-function generateCustomiseGrid(rows, cols) {
-    const gridContainer = document.getElementById("customise-grid");
-    gridContainer.style.setProperty('--grid-rows', rows);
-    gridContainer.style.setProperty('--grid-cols', cols);
-    for (let i = 0; i < (rows * cols); i++) {
+function generateCustomiseGrid(gridNum) {
+    const gridContainer1 = document.getElementById("customise-grid-sky");
+    for (let i = 0; i < (gridNum); i++) {
         let gridCell = document.createElement("div");
-        const addedCell = gridContainer.appendChild(gridCell);
-        addedCell.className = "popup-grid-item";
-        addedCell.id = "item-cell-" + i;
+        const addedCell = gridContainer1.appendChild(gridCell);
+        addedCell.className = "horizontal-grid-item";
+        addedCell.id = "custom-sky-cell-" + i;
+        addedCell.addEventListener("click", function () { onCustomiseCellClick(addedCell); });
+    }
+    const gridContainer2 = document.getElementById("customise-grid-land");
+    for (let i = 0; i < (gridNum); i++) {
+        let gridCell = document.createElement("div");
+        const addedCell = gridContainer2.appendChild(gridCell);
+        addedCell.className = "horizontal-grid-item";
+        addedCell.id = "custom-land-cell-" + i;
+        addedCell.addEventListener("click", function () { onCustomiseCellClick(addedCell); });
+    }
+    const gridContainer3 = document.getElementById("customise-grid-grid");
+    for (let i = 0; i < (gridNum); i++) {
+        let gridCell = document.createElement("div");
+        const addedCell = gridContainer3.appendChild(gridCell);
+        addedCell.className = "horizontal-grid-item";
+        addedCell.id = "custom-grid-cell-" + i;
         addedCell.addEventListener("click", function () { onCustomiseCellClick(addedCell); });
     }
 }
@@ -545,7 +559,7 @@ function sellForest() {
 
 let plantArray = getPlants(); //[[plantid, requirement_type, rarity, plant_name]]
 generateForestGrid(4, 4);
-generateCustomiseGrid(4, 4);
+generateCustomiseGrid(6);
 generatePlantSelectionGrid(2);
 generateRecycling();
 
