@@ -347,7 +347,7 @@ clickSelection.on('select', function (e) {
             popContent.innerHTML = `
             <p>Selected Marker at: <code>${markerPos}</code></p>
             <div class="d-grid gap-2">
-                <button class="btn btn-secondary p-1" id="popup-button">Collect</button>
+                <button class="btn btn-primary p-1" id="popup-button">Collect</button>
             </div>
             `;
             document.getElementById("marker-popup-title").innerHTML = markerDetails.name;
