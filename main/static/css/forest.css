@@ -232,15 +232,13 @@
     display: none;
     position: fixed;
     top: max(15vh, 140px);
-    height: 60vw;
-    max-height: 65vh;
-    min-height: 45vh;
     left: 5px;
+    /*height: 60vw;
+    max-height: 65vh;
+    min-height: 45vh;*/
     width: 25%;
-    min-width: 200px;
+    min-width: 200px !important;
     max-width: 50vw;
-    background-color: #f1f1f1;
-    border-radius: 10px;
     animation: popup-enter 0.5s;
     z-index: 21;
 }

@@ -148,8 +148,8 @@
       <div class="card-body p-2 mt-1">
         <!--<div class="popup-grid-container" id="plant-selection-grid" style="bottom: calc(30px + max(70px, 7vw));">
         </div>-->
-        <div class="" style="height: 225px;">
-          <div class="mh-100 m-2 d-flex flex-wrap overflow-y-scroll" id="plant-selection-grid">
+        <div class="mb-2 " style="height: 225px;">
+          <div class="mh-100 d-flex flex-wrap overflow-y-scroll" id="plant-selection-grid">
   
           </div>
         </div>
@@ -179,27 +179,27 @@
       </div>
     </div>
 
-    <div class="button-popup" id="sell-popup">
-      <div class="popup-title">
-        <div id="close-sell-popup" class="close-popup">
-          <i class="bi bi-x"
-            style="width: 100%; height: 100%; display: inline-block; font-size: max(4vw, 40px);"></i>
-        </div>
-        <div style="font-size: max(2.5vw, 25px);">Sell Land</div>
+    <div class="card button-popup" id="sell-popup" style="display: none;">
+      <div class="card-header d-flex justify-content-between align-items-center p-2">
+        <h3 class="card-title">Sell Land</h3>
+        <button type="button" class="btn-close" id="close-sell-popup"></button>
       </div>
 
-      <div id="sell-body" style="width: 90%; margin-left: auto;">
-        <div style="word-wrap:break-word; font-size:  max(1.5vw, 15px); width: 90%;">
-          Sell your land for reward tokens! Increase the value of your forest by increasing the number of plants, and
-          the biodiversity of the land. Some plants are worth more than others, but all contribute to biodiversity!
-          <br>
-          <div id="sell-value" style="font-size: max(2vw, 20px);">
-            Current value of your forest:
-            <span style="color:#48e07b">{{forest_value}} tokens.</span>
+      <div class="card-body p-2 mt-1">
+        <div class="mb-2">
+          <p>
+            Sell your land for reward tokens! Increase the value of your forest by increasing the number of plants, and
+            the biodiversity of the land. Some plants are worth more than others, but all contribute to biodiversity!
+          </p>
+          
+          <div id="sell-value" class="my-3">
+            <h5>Current value of your forest: <span class="text-success">{{forest_value}} tokens.</span></h5>
           </div>
-          <button type="button" id="sell-forest-button" class="btn btn-primary btn-lg flex-fill" style="position: absolute; bottom: 2%; width: 90%; left: 5%; font-size: max(3vw, 30px);">Sell</button>
+          
+          <div class="d-grid gap-2">
+            <button type="button" id="sell-forest-button" class="btn btn-primary">Sell</button>
+          </div>
         </div>
-
       </div>
     </div>
 
