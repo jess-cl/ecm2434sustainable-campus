@@ -165,7 +165,7 @@ const markersObject = JSON.parse(jsonMarkers);
 console.log(markersObject);
 
 // these are updated when a marker is collected, so cannot be constant
-let collected = document.getElementById("user-inv").innerHTML;
+let collected = document.getElementById("user-inv").innerHTML.split(',');
 console.log("Initial collected data: ", collected);
 
 function prepopulateMap() {
