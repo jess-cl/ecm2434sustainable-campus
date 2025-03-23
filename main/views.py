@@ -270,7 +270,7 @@ def calculate_forest_value(forest):
             cell_val = 0
             growth_stage = cell[1]
             plant_id = cell[0]
-            rarity = plant_list[int(plant_id) - 1][2]
+            rarity = str(plant_list[int(plant_id) - 1][2])
 
             # checks if the plant is (in the cells that have been iterated through already) unique
             if (plant_id not in unique_plants):
@@ -283,17 +283,18 @@ def calculate_forest_value(forest):
 
             # now check rarity and assign base value accordingly
             if (rarity == '2'):
-                cell_val = 200
-            elif (rarity == '1'):
-                cell_val = 150
-            else:
                 cell_val = 100
+            elif (rarity == '1'):
+                cell_val = 75
+            else:
+                cell_val = 50
             
             # half the value if the plant is in the middle growth stage
             if (growth_stage == '1'):
                 cell_val *= 0.5
             
             value += cell_val
+            print("calc step: " + str(value))
     
     # multiplies the value by 1.(number of unique plants)
     value *= (1 + (unique_plants_count/10))

@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 from accounts.models import CustomUser
 from .models import UserInventory, UserForest, Plant, UserHighScore
+from .views import calculate_forest_value
 import datetime
 
 # set up
@@ -29,6 +30,19 @@ class SetUpModels(TestCase):
         self.test_forest = UserForest(user_id = self.test_user.id)
         self.test_score = UserHighScore(user_id = self.test_user.id)
         # plants is not specific to a user; all user's will use the same table
+        plant_1 = Plant(requirement_type=0, rarity=0, plant_name="Oak Tree")
+        plant_1.save()
+        plant_2 = Plant(requirement_type=2, rarity=0, plant_name="Birch Tree")
+        plant_2.save()
+        plant_3 = Plant(requirement_type=2, rarity=1, plant_name="Fir Tree")
+        plant_3.save()
+        plant_4 = Plant(requirement_type=1, rarity=1, plant_name="Red Campion")
+        plant_4.save()
+        plant_5 = Plant(requirement_type=0, rarity=0, plant_name="Poppy")
+        plant_5.save()
+        plant_6 = Plant(requirement_type=1, rarity=2, plant_name="Cotoneaster")
+        plant_6.save()
+
 
 
 # testing models
@@ -81,3 +95,10 @@ class MapTest(SetUpModels):
                 already_collected = True
                 break
         self.assertFalse(already_collected) # as we are only testing one marker being collected, this should always be False
+
+class ForestTest(SetUpModels):
+    def test_calculate_forest_value(self):
+        """Checks if the value calculated by the function is correct for a forest with a known value."""
+        # this forest has a pre-calculated value of 260
+        self.test_forest.cells = "6,2,0;4,2,0;1,1,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0"
+        self.assertEqual(calculate_forest_value(self.test_forest), '260')
