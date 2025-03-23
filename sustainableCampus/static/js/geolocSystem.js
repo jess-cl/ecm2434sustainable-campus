@@ -344,7 +344,13 @@ clickSelection.on('select', function (e) {
             // creates an array of the markers that have already been collected today
             let userInvList = collected
 
-            popContent.innerHTML = '<h3><code>' + markerDetails.name +'</code></h3> <p>Selected Marker at: </p><code>' + markerPos + '</code>' + '<button id="popup-button">Collect</button>';
+            popContent.innerHTML = `
+            <p>Selected Marker at: <code>${markerPos}</code></p>
+            <div class="d-grid gap-2">
+                <button class="btn btn-secondary p-1" id="popup-button">Collect</button>
+            </div>
+            `;
+            document.getElementById("marker-popup-title").innerHTML = markerDetails.name;
             const popupButton = document.getElementById("popup-button");
             if (!userInvList.includes(markerDetails.idno)) {
                 popupButton.addEventListener("click", collectFromMarker);
