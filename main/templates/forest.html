@@ -102,35 +102,25 @@
 
 
     <!-- cell selected popups -->
-    <div class="forest-popup" id="occupied-popup">
-      <div class="popup-title">
-        <div id="close-occupied-popup" class="close-popup">
-          <i class="bi bi-x"
-            style="width: 100%; height: 100%; display: inline-block; font-size: max(4vw, 40px);"></i>
+    <div class="card forest-popup" id="occupied-popup" style="display: none;">
+      <div class="card-header d-flex justify-content-between align-items-center p-2">
+        <h3 class="card-title" id="plant-name">Customise</h3>
+        <button type="button" class="btn-close" id="close-occupied-popup"></button>
+      </div>
+
+      <div class="card-body p-2 mt-1">
+        <div class="mb-2">
+          <img id="selected-plant-image" src="" alt="" class="img-fluid mb-3">
         </div>
-        <div id="plant-name" style="font-size: max(2.5vw, 25px);">Customise</div>
-      </div>
 
-      <div style="width: 90%; margin: auto;">
-        <img id="selected-plant-image" src="" alt="" style="height: 100%; width: 100%;">
-      </div>
-
-      <div id="plant-details"
-        style="position: absolute; bottom: 0; height: calc(75px + max(50px, 5vw)); width: 100%; border-radius: 10px; background-color: rgba(216, 216, 216, 0.582);">
-        <div style="margin-left: auto; width: 90%; height: 100%;">
-          <label id="selected-plant-description"
-            style="position: absolute; bottom: calc(50px + max(35px, 3.5vw)); left: 5%; font-size: max(2vw, 20px);">plant
-            description</label>
-          <label id="selected-plant-resource"
-            style="position: absolute; bottom: calc(30px + max(25px, 2.5vw)); left: 5%; font-size: max(1.5vw, 15px);">Plant
-            Resource: </label>
-          <button type="button"
-            style="position: absolute; bottom: 5px; left: 5%; font-size:max(2vw, 20px); width: 90%; vertical-align: middle;"
-            id="selected-plant-requirement-button" class="btn btn-primary d-flex text-center">Give</button>
+        <div id="plant-details">
+          <h5 id="selected-plant-description">plant description</h5>
+          <p id="selected-plant-resource">Plant Resource: </p>
+          <div class="d-grid gap-2">
+            <button type="button" id="selected-plant-requirement-button" class="btn btn-primary">Give</button>
+          </div>
         </div>
       </div>
-
-
     </div>
 
 

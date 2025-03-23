@@ -207,7 +207,6 @@ function closePopup(popup) {
 function litterDragStart(event) {
     event.dataTransfer.clearData();
     event.dataTransfer.setData('text/plain', event.target.id);
-
     let litter = event.currentTarget;
     event.currentTarget.style.border = "#1da124";
     //highlighting correct bin
