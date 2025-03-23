@@ -1,0 +1,67 @@
+name: Django CI/CD
+
+# Trigger condition: Every push or pull request
+on:
+  push:
+    branches:
+      - main  # Trigger on push to main branch
+  pull_request:
+    branches:
+      - main  # Trigger on PR to main branch
+
+jobs:
+  # 1. CI - Continuous Integration
+  test:
+    runs-on: ubuntu-latest  # Use latest Ubuntu runner
+
+    steps:
+    # Checkout code
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Set up Python environment
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'  # Python version selection
+
+    # Install dependencies
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    # Database migrations
+    - name: Run migrations
+      run: python manage.py migrate
+
+    # Run Django tests
+    - name: Run tests
+      run: python manage.py test
+
+  # 2. CD - Continuous Deployment (on test success)
+  deploy:
+    needs: test  # Requires test job success
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout code
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Server deployment (SSH example)
+    - name: Deploy to Server
+      env:
+        SSH_USER: ${{ secrets.SSH_USER }}
+        SSH_HOST: ${{ secrets.SSH_HOST }}
+      run: |
+        ssh $SSH_USER@$SSH_HOST << 'EOF'
+          cd /path/to/your/project  # Navigate to project directory
+          git pull origin main  # Pull latest code
+          source /path/to/venv/bin/activate  # Activate virtual env (if exists)
+          pip install -r requirements.txt  # Install dependencies
+          python manage.py migrate  # Run migrations
+          python manage.py collectstatic --noinput  # Collect static files
+          sudo systemctl restart gunicorn  # Restart Gunicorn service
+          sudo systemctl restart nginx  # Restart Nginx service
+        EOF
