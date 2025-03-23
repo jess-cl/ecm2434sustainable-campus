@@ -132,7 +132,7 @@ geolocation.on('change:position', function () {
 function isMarkerInRange(markerPos, playerPos) {
     const distance = Math.sqrt((markerPos[0] - playerPos[0])**2 + (markerPos[1] - playerPos[1])**2);
     console.log("distance: " + distance);
-    if (distance <= 0.010) { // must be changed back to 0.001 (or similar), is set higher for testing purposes
+    if (distance <= 0.001) {
         return true;
     } else {
         return false;

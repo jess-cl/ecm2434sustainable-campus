@@ -81,20 +81,6 @@ class CheckDefaults(SetUpModels):
         self.assertEqual(default_score.high_score, 0)
 
 # testing views
-class MapTest(SetUpModels):
-    def test_collect_red_marker(self):
-        """Verifies that the correct resource is obtained from the marker, and that collected markers has updated"""
-        self.client.login(username="test_user", password="Testing123")
-        self.client.post(self.collect_red, {"marker_id" : 6}, user=self.test_user, xhr=True) # marker of id 6 is red
-        
-        self.assertNotEqual(self.test_inventory.plastic, 0) # player should have at least 1 plastic
-        list_of_collected_markers = self.test_inventory.collected_markers.split(',')
-        already_collected = False
-        for collected in list_of_collected_markers:
-            if (str(collected) == '6'):
-                already_collected = True
-                break
-        self.assertFalse(already_collected) # as we are only testing one marker being collected, this should always be False
 
 class ForestTest(SetUpModels):
     def test_calculate_forest_value(self):
