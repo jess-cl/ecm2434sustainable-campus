@@ -71,7 +71,7 @@ class MapTest(SetUpModels):
     def test_collect_red_marker(self):
         """Verifies that the correct resource is obtained from the marker, and that collected markers has updated"""
         self.client.login(username="test_user", password="Testing123")
-        self.client.post(self.collect_red, {"marker_id" : 6}, xhr=True) # marker of id 6 is red
+        self.client.post(self.collect_red, {"marker_id" : 6}, user=self.test_user, xhr=True) # marker of id 6 is red
         
         self.assertNotEqual(self.test_inventory.plastic, 0) # player should have at least 1 plastic
         list_of_collected_markers = self.test_inventory.collected_markers.split(',')
