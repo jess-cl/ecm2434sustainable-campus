@@ -27,7 +27,7 @@ class Announcement(models.Model):
 
     
 class Event(models.Model):
-    """Represents events to occur, and attached to events"""
+    """Represents events to occur, and attached to announcements"""
     announcement = models.OneToOneField(Announcement, on_delete=models.CASCADE)
     currency_reward = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(300)])
     transaction_description = models.TextField(max_length=200)
