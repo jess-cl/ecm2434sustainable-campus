@@ -439,13 +439,13 @@ def remove_from_inv(request):
 
 @login_required
 @csrf_exempt
-def use_consumeable(request):
+def use_consumable(request):
     user_inventory = UserInventory.objects.get(user=request.user)
     print("before decrementing:")
     print("tree guards: " + str(user_inventory.tree_guard) + " rain catchers: " + str(user_inventory.rain_catcher) + " fertilizer: " + str(user_inventory.fertilizer))
-    if (request.method == 'POST' and 'consumeable_id' in request.POST):
-        consumeable_id = request.POST['consumeable_id']
-        match str(consumeable_id):
+    if (request.method == 'POST' and 'consumable_id' in request.POST):
+        consumable_id = request.POST['consumable_id']
+        match str(consumable_id):
             case '0':
                 user_inventory.rain_catcher -= 1
             case '1':
@@ -456,5 +456,5 @@ def use_consumeable(request):
         print("tree guards: " + str(user_inventory.tree_guard) + " rain catchers: " + str(user_inventory.rain_catcher) + " fertilizer: " + str(user_inventory.fertilizer))
         user_inventory.save()
     else:
-        return JsonResponse({"result" : "error when removing consumeable from user's inventory"})
-    return JsonResponse({"result" : "removed consumeable from user's inventory successfully"})
+        return JsonResponse({"result" : "error when removing consumable from user's inventory"})
+    return JsonResponse({"result" : "removed consumable from user's inventory successfully"})

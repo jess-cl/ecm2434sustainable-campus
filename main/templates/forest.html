@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
   {% load static %}
   <script>const media_url = "{% get_media_prefix %}";</script>
@@ -121,7 +120,7 @@
 
 <body>
   {% include 'navbar.html' %}
-
+  <!-- background and column that the forest sits upon-->
   <div id="forest-view" style="position: relative; background: #48c2e0">
     <div id="forest-background">
 
@@ -137,20 +136,20 @@
       <div class="forest-container">
         <div id="forest-grid"></div>
       </div>
-
-
     </div>
 
 
     <!-- cell selected popups -->
+    <!-- popup when a plant is selected-->
     <div class="forest-popup" id="occupied-popup">
+      <!-- header -->
       <div class="popup-title">
         <div id="close-occupied-popup" class="close-popup">
           <i class="bi bi-x" style="width: 100%; height: 100%; display: inline-block; font-size: max(4vw, 40px);"></i>
         </div>
         <div id="plant-name" style="font-size: max(2.5vw, 25px);">Customise</div>
       </div>
-
+      <!-- body -->
       <div style="width: 90%; margin: auto;">
         <img id="selected-plant-image" src="" alt="" style="height: 100%; width: 100%;">
       </div>
@@ -169,19 +168,18 @@
             id="selected-plant-requirement-button" class="btn btn-primary d-flex text-center">Give</button>
         </div>
       </div>
-
-
     </div>
 
-
+    <!-- popup when an empty slot is selected-->
     <div class="forest-popup" id="empty-popup">
+      <!-- header -->
       <div class="popup-title">
         <div id="close-empty-popup" class="close-popup">
           <i class="bi bi-x" style="width: 100%; height: 100%; display: inline-block; font-size: max(4vw, 40px);"></i>
         </div>
         <div style="font-size: max(2.5vw, 25px);">Select plant</div>
       </div>
-
+      <!-- body -->
       <div style="position: absolute; top: max(4vw, 40px);  bottom: 0px; width: 100%; display: unset;">
         <div class="popup-grid-container" id="plant-selection-grid" style="bottom: calc(30px + max(70px, 7vw));">
         </div>
@@ -202,13 +200,16 @@
     </div>
 
     <!-- popups from buttons -->
+    <!-- Customise popup-->
     <div class="button-popup" id="customise-popup">
+      <!-- header -->
       <div class="popup-title">
         <div id="close-customise-popup" class="close-popup">
           <i class="bi bi-x" style="width: 100%; height: 100%; display: inline-block; font-size: max(4vw, 40px);"></i>
         </div>
         <div style="font-size: max(2.5vw, 25px);">Customise</div>
       </div>
+      <!-- body -->
       <div
         style="position: absolute; width: 95%; top: 10%; bottom:2%; margin-left: 2.5%; display: flex; flex-direction: column; justify-content: space-between;">
         <div style="width: 100%; height: 35%">
@@ -226,20 +227,19 @@
           <div class="horizontal-grid-container" id="customise-grid-grid"
             style="width: 100%; background-color: rgba(216, 216, 216, 0.582);"></div>
         </div>
-
-
       </div>
-
     </div>
 
+    <!-- Sell popup-->
     <div class="button-popup" id="sell-popup">
+      <!-- header -->
       <div class="popup-title">
         <div id="close-sell-popup" class="close-popup">
           <i class="bi bi-x" style="width: 100%; height: 100%; display: inline-block; font-size: max(4vw, 40px);"></i>
         </div>
         <div style="font-size: max(2.5vw, 25px);">Sell Land</div>
       </div>
-
+      <!-- body -->
       <div id="sell-body" style="width: 90%; margin-left: auto;">
         <div style="word-wrap:break-word; font-size:  max(1.5vw, 15px); width: 90%;">
           Sell your land for reward tokens! Increase the value of your forest by increasing the number of plants, and
@@ -252,21 +252,21 @@
           <button type="button" id="sell-forest-button" class="btn btn-primary btn-lg flex-fill"
             style="position: absolute; bottom: 2%; width: 90%; left: 5%; font-size: max(3vw, 30px);">Sell</button>
         </div>
-
       </div>
     </div>
 
+    <!-- Recycling popup, takes up whole page-->
     <div id="recycling-popup">
+      <!-- header -->
       <div class="popup-title">
         <div id="close-recycling-popup" class="close-popup">
           <i class="bi bi-x" style="width: 100%; height: 100%; display: inline-block; font-size: max(4vw, 40px); "></i>
         </div>
         <div style="font-size: max(2.5vw, 25px);">Recycling</div>
       </div>
+      <!-- body -->
       <div id="recycling-container" style="position: absolute; top: 4vw;  bottom: 0px; width: 100%; display: unset;">
-        <div id="litter-container" style="height: 70%; width: 100%;">
-
-        </div>
+        <div id="litter-container" style="height: 70%; width: 100%;"></div>
         <div id="bin-container"
           style="display:flex; flex-direction: row; justify-content: space-around; height: 30%; width: 100%;">
           <div class="recycling-dropzone" id="plastic-recycling" ondragover="litterDragOver(event);"
@@ -276,7 +276,7 @@
           <div class="recycling-dropzone" id="compost-recycling" ondragover="litterDragOver(event);"
             ondrop="litterDrop(event);" style="background-color: green;"></div>
         </div>
-
+        <!-- bottom of body -->
         <div id="progress-bars-container"
           style="position: absolute; bottom: 0px; height: 5%; width: 100%; display:flex; flex-direction: row; justify-content: space-around;">
           <div class="progress-container" id="plastic-progress-container">
@@ -289,27 +289,24 @@
             <div class="progress-fill" id="compost-progress" style="background: lightgreen;"><span id="compost-percent">%</span></div>
           </div>
         </div>
-
       </div>
     </div>
 
-    <!-- Buttons -->
-
+    <!-- Buttons anchored at bottom of the screen-->
     <div id="button-container" class="w-100 d-flex gap-2">
       <button type="button" id="customise-button" class="btn btn-primary btn-lg flex-fill expand-button">Customise</button>
       <button type="button" id="sell-button" class="btn btn-primary btn-lg flex-fill expand-button">Sell land</button>
       <button type="button" id="recycling-button" class="btn btn-primary btn-lg flex-fill expand-button">Recycle</button>
     </div>
+
+    <!-- Data containers -->
     <div id="retrieved-forest-content" class="data-container">{{user_forest}}</div>
     <div id="retrieved-inventory-content" class="data-container">{{user_inventory}}</div>
     <div id="retrieved-plant-content" class="data-container">{{plant_list}}</div>
     <div id="retrieved-value" class="data-container">{{forest_value}}</div>
     <div id="retrieved-customisation-content" class="data-container">{{customisations}}</div>
     <div id="retrieved-selected-customisation-content" class="data-container">{{selected_customisations}}</div>
-
   </div>
-
-
 
   <!-- Bootstrap JS -->
   <script src=" {% static '/bootstrap/js/bootstrap.bundle.min.js' %}">
@@ -317,5 +314,4 @@
   <!-- forest js files -->
   <script type="module" src="{% static '/js/forestDisplay.js' %}"></script>
 </body>
-
 </html>
