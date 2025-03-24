@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   {% load static %}
   <script>const media_url = "{% get_media_prefix %}";</script>
@@ -270,23 +271,32 @@
         <div id="bin-container"
           style="display:flex; flex-direction: row; justify-content: space-around; height: 30%; width: 100%;">
           <div class="recycling-dropzone" id="plastic-recycling" ondragover="litterDragOver(event);"
-            ondrop="litterDrop(event);" style="background-color: red;"></div>
+            ondrop="litterDrop(event);" style="background-color: red;">
+            <img id="plastic-icon" class="recycling-icons" src="" alt="">
+          </div>
           <div class="recycling-dropzone" id="paper-recycling" ondragover="litterDragOver(event);"
-            ondrop="litterDrop(event);" style="background-color: blue;"></div>
+            ondrop="litterDrop(event);" style="background-color: blue;">
+            <img id="paper-icon" class="recycling-icons" src="" alt="">
+          </div>
           <div class="recycling-dropzone" id="compost-recycling" ondragover="litterDragOver(event);"
-            ondrop="litterDrop(event);" style="background-color: green;"></div>
+            ondrop="litterDrop(event);" style="background-color: green;">
+            <img id="compost-icon" class="recycling-icons" src="" alt="">
+          </div>
         </div>
         <!-- bottom of body -->
         <div id="progress-bars-container"
           style="position: absolute; bottom: 0px; height: 5%; width: 100%; display:flex; flex-direction: row; justify-content: space-around;">
           <div class="progress-container" id="plastic-progress-container">
-            <div class="progress-fill" id="plastic-progress" style="background: lightcoral;"><span id="plastic-percent">%</span></div>
+            <div class="progress-fill" id="plastic-progress" style="background: lightcoral; font-size: 2vh;"><span
+                id="plastic-percent">%</span></div>
           </div>
           <div class="progress-container" id="paper-progress-container">
-            <div class="progress-fill" id="paper-progress" style="background: lightblue;"><span id="paper-percent">%</span></div>
+            <div class="progress-fill" id="paper-progress" style="background: lightblue; font-size: 2vh;"><span
+                id="paper-percent">%</span></div>
           </div>
           <div class="progress-container" id="compost-progress-container">
-            <div class="progress-fill" id="compost-progress" style="background: lightgreen;"><span id="compost-percent">%</span></div>
+            <div class="progress-fill" id="compost-progress" style="background: lightgreen; font-size: 2vh;"><span
+                id="compost-percent">%</span></div>
           </div>
         </div>
       </div>
@@ -294,9 +304,11 @@
 
     <!-- Buttons anchored at bottom of the screen-->
     <div id="button-container" class="w-100 d-flex gap-2">
-      <button type="button" id="customise-button" class="btn btn-primary btn-lg flex-fill expand-button">Customise</button>
+      <button type="button" id="customise-button"
+        class="btn btn-primary btn-lg flex-fill expand-button">Customise</button>
       <button type="button" id="sell-button" class="btn btn-primary btn-lg flex-fill expand-button">Sell land</button>
-      <button type="button" id="recycling-button" class="btn btn-primary btn-lg flex-fill expand-button">Recycle</button>
+      <button type="button" id="recycling-button"
+        class="btn btn-primary btn-lg flex-fill expand-button">Recycle</button>
     </div>
 
     <!-- Data containers -->
@@ -313,5 +325,12 @@
   </script>
   <!-- forest js files -->
   <script type="module" src="{% static '/js/forestDisplay.js' %}"></script>
+  <!-- assigning images -->
+  <script>
+    document.getElementById("plastic-icon").src = media_url + "forest_assets/plasticIcon.png";
+    document.getElementById("paper-icon").src = media_url + "forest_assets/paperIcon.png";
+    document.getElementById("compost-icon").src = media_url + "forest_assets/compostIcon.png";
+  </script>
 </body>
+
 </html>
