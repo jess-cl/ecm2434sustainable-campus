@@ -361,7 +361,10 @@ clickSelection.on('select', function (e) {
             }
         } else {
             console.log("Selected un-interactable marker.");
-            popContent.innerHTML = '<h3><code>' + markerDetails.name +'</code></h3><p>Selected Marker at: </p><code>' + markerPos + '</code>';
+            popContent.innerHTML = `
+            <p>Selected Marker at: <code>${markerPos}</code></p> 
+            `;
+            document.getElementById("marker-popup-title").innerHTML = markerDetails.name;
         }
 
         // called here to ensure the player does not softlock into a situation where all markers are collected and cannot reset
