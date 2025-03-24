@@ -130,10 +130,12 @@ function onPlantCellClick(cell) {
 }
 
 function onCustomiseCellClick(cell) {
+    let selectedCustomisations = document.getElementById("retrieved-selected-customisation-content").innerHTML.split(",");
     //checks type of customisation and applies to appropriate area
     switch (cell.customisationType) {
         case "0":   //sky
             document.getElementById("forest-view").style.backgroundImage = "linear-gradient(" + cell.primaryColour + ", " + cell.secondaryColour + ")";
+            selectedCustomisations[0] = cell.customisationId;
             break;
         case "1":   //ground
             document.getElementById("forest-floor-texture").style.backgroundColor = cell.primaryColour;
@@ -145,6 +147,7 @@ function onCustomiseCellClick(cell) {
                 ((((colorValue >> 8) & 0x00FF) + adjustment) << 8) |
                 (((colorValue >> 16) + adjustment) << 16)).toString(16);
             document.getElementById("forest-background-right").style.backgroundColor = tertColor;
+            selectedCustomisations[1] = cell.customisationId;
             break;
         case "2":   //grid
             let elements = document.getElementsByClassName("grid-item");
@@ -154,9 +157,12 @@ function onCustomiseCellClick(cell) {
                 elements[i].style.borderRightColor = cell.secondaryColour;
                 elements[i].style.borderLeftColor = cell.primaryColour;
                 elements[i].style.borderBottomColor = cell.primaryColour;
+                selectedCustomisations[2] = cell.customisationId;
             }
             break;
     }
+    //saves updated customisation
+    ajaxCallSaveCustomisations(selectedCustomisations[0] + "," + selectedCustomisations[1] + "," + selectedCustomisations[2]);
 }
 
 
@@ -493,6 +499,23 @@ function sellForest() {
         let currentPlantImage = document.getElementById("forest-image-" + i);
         currentPlantImage.src = currentCell.plantImagePath;
     }
+}
+
+function ajaxCallSaveCustomisations(customiseString) {
+    $.ajax({
+        url: "save_customisations",
+        type: 'POST',
+        cache: false,
+        async: false,
+        data: { 'selected_customisations': customiseString },
+        success: function (response) {
+            console.log("Response: ", response);
+        },
+        error: function (error) {
+            console.log("encountered error when sending customisation data: ", error);
+        }
+    })
+        .done(response => { console.log("saved this: " + customiseString) }); // we don't need to do anything with the response
 }
 
 function ajaxCallSaveForest(forestString) {

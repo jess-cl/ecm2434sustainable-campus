@@ -168,10 +168,6 @@ def claim_green_marker(request):
     user_inventory.save()
     return JsonResponse({"result" : "updated user inventory successfully"})
 
-@login_required
-def save_forest(request):
-    user_forest = UserForest.objects.get(user=request.user)
-    return JsonResponse({"result" : "updated user forest successfully"})
 
 @login_required
 def drop_seedling(inv):
@@ -361,6 +357,17 @@ def save_forest(request):
         return JsonResponse({"result" : "error when receiving user forest"})
     user_forest.save()
     return JsonResponse({"result" : "updated user forest successfully"})
+
+@login_required
+@csrf_exempt
+def save_customisations(request):
+    user_forest = UserForest.objects.get(user=request.user)
+    if (request.method == 'POST' and 'selected_customisations' in request.POST):
+        user_forest.customisations = request.POST['selected_customisations']
+    else:
+        return JsonResponse({"result" : "error when receiving user customisations"})
+    user_forest.save()
+    return JsonResponse({"result" : "updated user customisations successfully"})
 
 @login_required
 def get_plant_list(request):
