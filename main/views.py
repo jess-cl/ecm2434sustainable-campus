@@ -235,12 +235,13 @@ def update_forest_on_page(request):
 @login_required
 def update_inventory_on_forest(request):
     user_inventory = UserInventory.objects.get(user=request.user)
-    print("UPDATE INVENTORY ON THE PAGE")
+    
     user_inventory_dict = user_inventory.to_dict()
     print(user_inventory_dict)
     user_inventory_str = ""
     for key in user_inventory_dict.keys():
         user_inventory_str += str(user_inventory_dict[key]) + ","
+    print("UPDATE INVENTORY ON THE PAGE" + user_inventory_str)
     return JsonResponse({"user_inventory" : user_inventory_str})
 
 @login_required

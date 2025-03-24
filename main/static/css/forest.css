@@ -289,6 +289,32 @@
     }
 }
 
+.progress-container {
+    position: relative;
+    width: 24%;
+    height: 90%;
+    border-radius: 5px;
+    background: #f9ffffa1;
+}
+
+.progress-fill {
+
+    position: relative;
+    text-align: center;
+    height: 90%;
+    width: 50%;
+    border-radius: 5px;
+}
+
+.progress-fill span {
+    position: relative;
+    display: inline-block;
+    position: absolute;
+    width: 100%;
+    left: 0;
+}
+
+
 
 .recycling-dropzone {
     height: 90%;

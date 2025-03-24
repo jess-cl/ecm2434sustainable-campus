@@ -247,13 +247,13 @@ function litterDragStart(event) {
     //highlighting correct bin
     switch (litter.litterType) {
         case 0:
-            document.getElementById("plastic-recycling").style.height = "100%";
-            document.getElementById("paper-recycling").style.opacity = "0.4";
+            document.getElementById("plastic-recycling").style.opacity = "0.4";
+            document.getElementById("paper-recycling").style.height = "100%";
             document.getElementById("compost-recycling").style.opacity = "0.4";
             break;
         case 1:
-            document.getElementById("plastic-recycling").style.opacity = "0.4";
-            document.getElementById("paper-recycling").style.height = "100%";
+            document.getElementById("plastic-recycling").style.height = "100%";
+            document.getElementById("paper-recycling").style.opacity = "0.4";
             document.getElementById("compost-recycling").style.opacity = "0.4";
             break;
         case 2:
@@ -307,10 +307,10 @@ function generateRecycling() {
         addedLitter.style = "top: " + Math.random() * 60 + "%; left: " + + Math.random() * 90 + "%;";
         switch (addedLitter.litterType) {
             case 0:
-                addedLitter.style.backgroundColor = "red";
+                addedLitter.style.backgroundColor = "blue";
                 break;
             case 1:
-                addedLitter.style.backgroundColor = "blue";
+                addedLitter.style.backgroundColor = "red";
                 break;
             case 2:
                 addedLitter.style.backgroundColor = "green";
@@ -659,7 +659,24 @@ function loadCustomisations() {
     }
 }
 
-
+function loadLitter() {
+    const userInv = document.getElementById("retrieved-inventory-content").innerHTML.split(",");
+    const recycled_paper = userInv[3];
+    const recycled_plastic = userInv[4];
+    const recycled_compost = userInv[5];
+    //calculating % to completion
+    const paperPercent = String((Number(recycled_paper) / 5) * 100) + "%";
+    const plasticPercent = String((Number(recycled_plastic) / 5) * 100) + "%";
+    const compostPercent = String((Number(recycled_compost) / 5) * 100) + "%";
+    //filling progress bars
+    document.getElementById("paper-progress").style.width = paperPercent;
+    document.getElementById("plastic-progress").style.width = plasticPercent;
+    document.getElementById("compost-progress").style.width = compostPercent;
+    //writing to labels
+    document.getElementById("paper-percent").innerHTML = paperPercent;
+    document.getElementById("plastic-percent").innerHTML = plasticPercent;
+    document.getElementById("compost-percent").innerHTML = compostPercent;
+}
 
     let plantArray = getPlants(); //[[plantid, requirement_type, rarity, plant_name]]
     generateForestGrid(4, 4);
@@ -667,6 +684,7 @@ function loadCustomisations() {
     generateRecycling();
     generateCustomisationGrid()
     loadCustomisations();
+    loadLitter();
 
     document.getElementById("empty-popup").selectedCell = null;
     document.getElementById("customise-button").addEventListener("click", onCustomiseClick);
