@@ -105,10 +105,10 @@ WSGI_APPLICATION = 'sustainableCampus.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'wzhnb666$sustainablecampus',
-        'USER': 'wzhnb666',
-        'PASSWORD': 'sustainablecampus',
-        'HOST': 'wzhnb666.mysql.pythonanywhere-services.com',
+        'NAME': 'sustainableCampu$default',
+        'USER': 'sustainableCampu',
+        'PASSWORD': 'suscam123',
+        'HOST': 'sustainableCampus.mysql.pythonanywhere-services.com',
         'PORT': '3306',
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
