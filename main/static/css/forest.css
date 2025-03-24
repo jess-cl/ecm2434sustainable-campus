@@ -324,10 +324,9 @@
     align-self: flex-end;
 }
 
-#recycling-button {
-
+.expand-button {
     &:hover {
-        scale: 110%;
+        transform: scaleX(102%) scaleY(110%) ;
     }
 }
 
@@ -354,13 +353,4 @@
     100% {
         transform: scale(0, 0);
     }
-}
-
-#recycling-button {
-    cursor: pointer;
-    background-color: #0f0;
-    top: 5%;
-    height: 100%;
-    width: 10%;
-    border-radius: 10%;
 }
