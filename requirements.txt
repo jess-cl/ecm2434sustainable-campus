@@ -27,14 +27,16 @@
 #celery -A sustainableCampus worker --loglevel=info
 #celery -A sustainableCampus beat --loglevel=info
 
-#If you want to add a dependencyasgiref==3.8.1
+
+
+#----------------------------------
+#If you want to add a dependency
 #After installing the dependency,
 #remember to execute the following commands to automatically update the dependency.
 #(Must be in a virtual environment!)
 #pip freeze > requirements.txt
 
-
-
+asgiref==3.8.1
 Brotli==1.1.0
 click==8.1.8
 dj-database-url==2.3.0
