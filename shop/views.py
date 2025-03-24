@@ -16,7 +16,11 @@ def shop_items(request):
     # Retrieves all items stored in the ShopItem table
     items = ShopItem.objects.all()
 
-    user_balance = UserBalance.objects.get(user_id=request.user)
+    # Ensures gamekeepers and developers dont need balances created in the database 
+    if request.user.role == "player":
+        user_balance = UserBalance.objects.get(user_id=request.user)
+    else: 
+        user_balance = None
 
     context = {'items':items, 'user_balance':user_balance}
     return render(request, 'shop/shop.html', context)

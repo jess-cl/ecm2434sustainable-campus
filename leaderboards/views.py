@@ -22,7 +22,7 @@ def forest_leaderboard(request):
                 user_rank += 1
                 if all_player_scores[user_rank - 1] == user_score:
                     break
-
+                
         except UserHighScore.DoesNotExist:
             messages.error(request, "Your forest high score could not be found.")
             user_score = None
