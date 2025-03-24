@@ -72,7 +72,7 @@
         <div class="d-flex align-items-center mb-4 gap-2">
             <div class="me-auto">
                 <h1 class="h3 mb-0">Forest Leaderboard</h1>
-                <p class="text-secondary mb-0">Compete with others to grow the most trees</p>
+                <p class="text-secondary mb-0">Compete with others to grow the most trees, and have the highest land sell!</p>
             </div>
             <div class="d-flex align-items-center gap-2">
                 <a
@@ -96,7 +96,7 @@
                         <tr>
                             <th scope="col" class="border-0 py-3">Rank</th>
                             <th scope="col" class="border-0 py-3">Player</th>
-                            <th scope="col" class="border-0 py-3 text-end">Trees Grown</th>
+                            <th scope="col" class="border-0 py-3 text-end">Highest Land Sell</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -132,7 +132,7 @@
                                 <td class="py-3 text-end">
                                     <div class="score-badge">
                                         <i class="bi bi-tree-fill tree-icon"></i>
-                                        {{ player.score }}
+                                        {{ player.high_score }}
                                     </div>
                                 </td>
                             </tr>

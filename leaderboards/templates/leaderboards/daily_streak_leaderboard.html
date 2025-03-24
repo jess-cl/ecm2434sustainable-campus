@@ -76,7 +76,7 @@
             </div>
             <div class="d-flex align-items-center gap-2">
                 <a
-                href="{% url 'leaderboards:leaderboard' %}"
+                href="{% url 'leaderboards:forest_leaderboard' %}"
                 class="btn btn-outline-success p-2 lh-1 d-flex align-items-center"
                 >
                 <i class="lni lni-wallet-1 me-1"></i> Forest Leaderboard
@@ -117,8 +117,8 @@
                                     <div class="d-flex align-items-center">
                                         <div class="avatar">
                                             <img src="
-                                                {% if user.is_authenticated and user.profile.image %}
-                                                    {{ user.profile.image.url }}" 
+                                                {% if player.user.profile.image %}
+                                                    {{ player.user.profile.image.url }}" 
                                                 {% else %}
                                                     {% static 'images/default.png' %}
                                                 {% endif %}"

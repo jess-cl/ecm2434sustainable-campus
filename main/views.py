@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from pathlib import Path
-from .models import UserForest, UserInventory, Plant
+from .models import UserForest, UserInventory, Plant, UserHighScore, Customisations
 from shop.models import UserBalance
 from django.http import HttpResponse, JsonResponse
 from random import randint
@@ -21,7 +21,13 @@ def map(request):
             print("JSON FILE LINE: " + line)
             markers += line
     print("markers data: " + markers)
-    user_inventory = UserInventory.objects.get(user=request.user)
+    user_inventory = ""
+    try:
+        user_inventory = UserInventory.objects.get(user=request.user)
+    except UserInventory.DoesNotExist:
+        # adds a new record to the table if one does not exist for the user
+        user_inventory = UserInventory(user_id = request.user.id)
+        user_inventory.save()
     collected = user_inventory.collected_markers
     print("inv: ", user_inventory)
     print("collected markers: ", collected)
@@ -30,11 +36,23 @@ def map(request):
 @login_required
 def forest(request):
     # gets the state of the user's forest saved to the database
-    user_forest = UserForest.objects.get(user=request.user)
+    user_forest = ""
+    try:
+        user_forest = UserForest.objects.get(user=request.user)
+    except UserForest.DoesNotExist:
+        # adds a new record to the table if one does not exist for the user
+        user_forest = UserForest(user_id = request.user.id)
+        user_forest.save()
     print("before growth check: " + user_forest.last_growth_check_date)
     check_if_plants_should_grow(user_forest)
     print("after growth check: " + user_forest.last_growth_check_date)
-    user_inventory = UserInventory.objects.get(user=request.user)
+    user_inventory = ""
+    try:
+        user_inventory = UserInventory.objects.get(user=request.user)
+    except UserInventory.DoesNotExist:
+        # adds a new record to the table if one does not exist for the user
+        user_inventory = UserInventory(user_id = request.user.id)
+        user_inventory.save()
     # gets all relevant information from the plants table, allowing it to be used within the view/page
     plant_string = ""
     for plant in Plant.objects.all():
@@ -48,8 +66,12 @@ def forest(request):
     print(user_inventory_str)
     # calculates the forest value on page load
     value = calculate_forest_value(user_forest)
+    # gets list of all customisation options
+    customisation_string = ""
+    for record in Customisations.objects.all():
+        customisation_string += str(record.id) + "," + str(record.customisation_type) + "," + str(record.primary_colour_code) + "," + str(record.secondary_colour_code) + ";"
 
-    return render(request, "forest.html", {"user_forest" : user_forest.cells, "user_inventory" : user_inventory_str, "plant_list" : plant_string, "forest_value" : value})
+    return render(request, "forest.html", {"user_forest" : user_forest.cells, "user_inventory" : user_inventory_str, "plant_list" : plant_string, "forest_value" : value, "customisations" : customisation_string, "selected_customisations" : user_forest.customisations})
 
 @login_required
 def check_if_plants_should_grow(forest):
@@ -146,10 +168,6 @@ def claim_green_marker(request):
     user_inventory.save()
     return JsonResponse({"result" : "updated user inventory successfully"})
 
-@login_required
-def save_forest(request):
-    user_forest = UserForest.objects.get(user=request.user)
-    return JsonResponse({"result" : "updated user forest successfully"})
 
 @login_required
 def drop_seedling(inv):
@@ -252,7 +270,7 @@ def calculate_forest_value(forest):
             cell_val = 0
             growth_stage = cell[1]
             plant_id = cell[0]
-            rarity = plant_list[int(plant_id) - 1][2]
+            rarity = str(plant_list[int(plant_id) - 1][2])
 
             # checks if the plant is (in the cells that have been iterated through already) unique
             if (plant_id not in unique_plants):
@@ -265,17 +283,18 @@ def calculate_forest_value(forest):
 
             # now check rarity and assign base value accordingly
             if (rarity == '2'):
-                cell_val = 200
-            elif (rarity == '1'):
-                cell_val = 150
-            else:
                 cell_val = 100
+            elif (rarity == '1'):
+                cell_val = 75
+            else:
+                cell_val = 50
             
             # half the value if the plant is in the middle growth stage
             if (growth_stage == '1'):
                 cell_val *= 0.5
             
             value += cell_val
+            print("calc step: " + str(value))
     
     # multiplies the value by 1.(number of unique plants)
     value *= (1 + (unique_plants_count/10))
@@ -341,20 +360,49 @@ def save_forest(request):
     return JsonResponse({"result" : "updated user forest successfully"})
 
 @login_required
+@csrf_exempt
+def save_customisations(request):
+    user_forest = UserForest.objects.get(user=request.user)
+    if (request.method == 'POST' and 'selected_customisations' in request.POST):
+        user_forest.customisations = request.POST['selected_customisations']
+    else:
+        return JsonResponse({"result" : "error when receiving user customisations"})
+    user_forest.save()
+    return JsonResponse({"result" : "updated user customisations successfully"})
+
+@login_required
 def get_plant_list(request):
     plantString = ""
     for plant in Plant.objects.all():
         plantString += plant.id + "," + plant.requirement_type + "," + plant.rarity + "," + plant.plant_name + ";"
-
+    print("plants")
     return JsonResponse({"plant_list" : plantString})
 
 @login_required
 @csrf_exempt
 def add_tokens(request):
-    user_balance = UserBalance.objects.get(user_id=request.user.id)
+    user_balance = ""
+    try:
+        user_balance = UserBalance.objects.get(user_id=request.user.id)
+    except UserBalance.DoesNotExist:
+        # adds a new record to the table if one does not exist for the user
+        user_balance = UserBalance(user_id = request.user)
+        user_balance.save()
+    user_high_score = ""
+    try:
+        user_high_score = UserHighScore.objects.get(user=request.user)
+    except UserHighScore.DoesNotExist:
+        # adds a new record to the table if one does not exist for the user
+        user_high_score = UserHighScore(user_id = request.user.id)
+        user_high_score.save()
     print("previous balance: " + str(user_balance.currency))
     if (request.method == 'POST' and 'number_of_tokens' in request.POST):
-        user_balance.currency += int(request.POST['number_of_tokens'])
+        num_tokens = int(request.POST['number_of_tokens'])
+        user_balance.currency += num_tokens
+        if (num_tokens > user_high_score.high_score):
+            print("new high score: " + str(num_tokens))
+            user_high_score.high_score = num_tokens
+            user_high_score.save()
     else:
         return JsonResponse({"result" : "error when adding tokens to user balance"})
     print("updated balance: " + str(user_balance.currency))

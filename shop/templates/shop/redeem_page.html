@@ -1,16 +1,57 @@
-<h2>Redeem Code for Player</h2>
+{% load static %}
 
-{% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-    </ul>
-{% endif %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link href="{% static '/custom_bootstrap/bootstrap.css' %}" rel="stylesheet" />
+        <title>Redeem Code for Player</title>
+    </head>
+    <body class="bg-light">
+        {% include 'navbar.html' %}
 
-<form method="POST">
-    {% csrf_token %}
-    <label for="redeem_code">Enter 6-digit Redeem Code:</label>
-    <input type="text" name="redeem_code" maxlength="6" required>
-    <button type="submit">Submit</button>
-</form>
+        <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+            <h2 class="mb-4">Redeem Code for Player</h2>
+
+            <!-- Display Messages -->
+            {% if messages  %}
+                {% for message in messages %}
+                    {% if message.tags == "success" %}
+                        <div class="alert alert-success">
+                            <p class="mb-0">{{ message }}</p>
+                        </div>
+                    {% elif message.tags == "error" %}
+                        <div class="alert alert-danger">
+                            <p class="mb-0">{{ message }}</p>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+
+            <!-- Redeem Code Form -->
+            <form method="POST" class="card p-4">
+                {% csrf_token %}
+                
+                <!-- Redeem Code Input -->
+                <div class="mb-3">
+                    <label for="redeem_code" class="form-label">Enter 6-digit Redeem Code</label>
+                    <input type="text" class="form-control" id="redeem_code"  name="redeem_code" maxlength="6" >
+                </div>
+
+                <!-- Submit Button -->
+                <div class="d-flex gap-3">
+                <button type="submit" class="btn btn-primary px-4">Submit</button>
+                <a class="btn btn-secondary px-4" href="{% url 'shop:shop' %}">Back to Shop</a>
+                </div>
+            </form>
+            </div>
+        </div>
+        </div>
+
+        <!-- Bootstrap JS -->
+        <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    </body>
+</html>

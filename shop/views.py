@@ -16,7 +16,11 @@ def shop_items(request):
     # Retrieves all items stored in the ShopItem table
     items = ShopItem.objects.all()
 
-    user_balance = UserBalance.objects.get(user_id=request.user)
+    # Ensures gamekeepers and developers dont need balances created in the database 
+    if request.user.role == "player":
+        user_balance = UserBalance.objects.get(user_id=request.user)
+    else: 
+        user_balance = None
 
     context = {'items':items, 'user_balance':user_balance}
     return render(request, 'shop/shop.html', context)
@@ -37,6 +41,10 @@ def add_shop_item(request):
         currency_cost = request.POST.get('currency_cost')
         is_digital = 'is_digital' in request.POST 
         image = request.FILES.get('image')
+
+        if not name or not description or not currency_cost or not image:
+            messages.error(request, "All fields must be filled out before submitting.")
+            return render(request, 'shop/add_shop_item.html')
 
         # Create and save the new item
         item = ShopItem(

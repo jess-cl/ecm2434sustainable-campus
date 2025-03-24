@@ -1,28 +1,74 @@
-Django==5.1.6
-qrcode==8.0
-pillow==10.4.0
+#Django==5.1.6
+#qrcode==8.0
+#pillow==10.4.0
 
 # Celery and Celery beat needed for scheduling background tasks to run on certain days, such 
 # as the leaderboard reward system that rewards players for being in top 10 each Saturday 
-pip install celery
-pip install django-celery-beat
+#pip install celery
+#pip install django-celery-beat
 
 ## Setting up Redis for Celery to run ##
 
 # If the deployment server is Windows-based, install and start Redis using WSL
-wsl --install -d Ubuntu  # Install Ubuntu on WSL (if not already installed)
-wsl                      # Launch WSL
-sudo apt update && sudo apt install redis-server -y
-sudo service redis-server start
+#wsl --install -d Ubuntu  # Install Ubuntu on WSL (if not already installed)
+#wsl                      # Launch WSL
+#sudo apt update && sudo apt install redis-server -y
+#sudo service redis-server start
 
 # If the deployment server is Linux-based, install and start Redis normally
-sudo apt update && sudo apt install redis-server -y
-sudo systemctl enable redis
-sudo systemctl start redis
+#sudo apt update && sudo apt install redis-server -y
+#sudo systemctl enable redis
+#sudo systemctl start redis
 
 # If Redis is already installed, start it manually
-redis-server
+#redis-server
 
 # needed to make tasks work on schedule
-celery -A sustainableCampus worker --loglevel=info
-celery -A sustainableCampus beat --loglevel=info
+#celery -A sustainableCampus worker --loglevel=info
+#celery -A sustainableCampus beat --loglevel=info
+
+
+
+#----------------------------------
+#If you want to add a dependency
+#After installing the dependency,
+#remember to execute the following commands to automatically update the dependency.
+#(Must be in a virtual environment!)
+#pip freeze > requirements.txt
+
+amqp==5.3.1
+asgiref==3.8.1
+async-timeout==5.0.1
+billiard==4.2.1
+Brotli==1.1.0
+celery==5.3.6
+click==8.1.8
+click-didyoumean==0.3.1
+click-plugins==1.1.1
+click-repl==0.3.0
+cron-descriptor==1.4.5
+dj-database-url==2.3.0
+Django==5.0.6
+django-celery-beat==2.7.0
+django-timezone-field==7.1
+gunicorn==23.0.0
+h11==0.14.0
+kombu==5.5.0
+mysqlclient==2.2.7
+packaging==24.2
+pillow==10.4.0
+prompt_toolkit==3.0.50
+psycopg2-binary==2.9.10
+python-crontab==3.2.0
+python-dateutil==2.9.0.post0
+qrcode==8.0
+redis==5.0.1
+six==1.17.0
+sqlparse==0.5.3
+typing_extensions==4.12.2
+tzdata==2025.1
+uvicorn==0.34.0
+vine==5.1.0
+wcwidth==0.2.13
+whitenoise==6.9.0
+

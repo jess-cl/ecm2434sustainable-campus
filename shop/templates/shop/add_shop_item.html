@@ -1,63 +1,78 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link href="{% static '/custom_bootstrap/bootstrap.css' %}" rel="stylesheet" />
         <title>Add New Item to Shop</title>
-        <link href="https://cdn.lineicons.com/5.0/lineicons.css" rel="stylesheet" />
-        <link
-            href="{% static '/bootstrap/css/bootstrap.min.css' %}"
-            rel="stylesheet"
-        />
     </head>
     <body class="bg-light">
-    {% include 'navbar.html' %}
-    
-    <div class="container mt-4">
-        <h1 class="h3 mb-4">Add New Item to Shop</h1>
-      
-        {% if messages %}
-            <div class="mt-3">
-                {% for message in messages %}
-                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        {% include 'navbar.html' %}
+
+        <div class="container mt-4">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                <h1 class="mb-4">Add New Item to Shop</h1>
+
+                {% if messages  %}
+                    {% for message in messages %}
+                        {% if message.tags == "success" %}
+                            <div class="alert alert-success">
+                                <p class="mb-0">{{ message }}</p>
+                            </div>
+                        {% elif message.tags == "error" %}
+                            <div class="alert alert-danger">
+                                <p class="mb-0">{{ message }}</p>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+                <form method="POST" enctype="multipart/form-data" class="card p-4">
+                    {% csrf_token %}
+
+                    <!-- Item Name Field -->
+                    <div class="mb-3">
+                        <label for="id_name" class="form-label">Item Name</label>
+                        <input type="text" class="form-control" id="id_name" name="name">
                     </div>
-                {% endfor %}
+
+                    <!-- Description Field -->
+                    <div class="mb-3">
+                        <label for="id_description" class="form-label">Description</label>
+                        <textarea class="form-control" id="id_description" name="description" rows="3"></textarea>
+                    </div>
+
+                    <!-- Currency Cost Field -->
+                    <div class="mb-3">
+                        <label for="id_currency_cost" class="form-label">Currency Cost</label>
+                        <input type="number" class="form-control" id="id_currency_cost" name="currency_cost" min="1">
+                    </div>
+
+                    <!-- Is Digital Checkbox -->
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="id_is_digital" name="is_digital">
+                        <label class="form-check-label" for="id_is_digital">Is this item digital?</label>
+                    </div>
+
+                    <!-- Item Image Upload -->
+                    <div class="mb-4">
+                        <label for="id_image" class="form-label">Item Image</label>
+                        <input type="file" class="form-control" id="id_image" name="image" accept="image/*">
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="d-flex gap-3">
+                        <button type="submit" class="btn btn-primary px-4">Add Item</button>
+                        <a class="btn btn-secondary px-4" href="{% url 'shop:shop' %}">Back to Items</a>
+                    </div>
+                </form>
+                </div>
             </div>
-        {% endif %}
+        </div>
 
-        <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="mb-3">
-                <label for="name" class="form-label">Item Name</label>
-                <input type="text" class="form-control" id="name" name="name" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="description" class="form-label">Description</label>
-                <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
-            </div>
-
-            <div class="mb-3">
-                <label for="currency_cost" class="form-label">Currency Cost</label>
-                <input type="number" class="form-control" id="currency_cost" name="currency_cost" min="1" required>
-            </div>
-
-            <div class="mb-3 form-check">
-                <input type="checkbox" class="form-check-input" id="is_digital" name="is_digital">
-                <label class="form-check-label" for="is_digital">Is this item digital?</label>
-            </div>
-
-            <div class="mb-3">
-                <label for="image" class="form-label">Item Image</label>
-                <input type="file" class="form-control" id="image" name="image" accept="image/*">
-            </div>
-
-            <button type="submit" class="btn btn-primary">Add Item</button>
-        </form>
-    </div>
-
+        <!-- Bootstrap JS -->
         <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script>
     </body>
 </html>

@@ -4,6 +4,6 @@ from . import views
 app_name = 'leaderboards'
 
 urlpatterns = [
-    path("", views.leaderboard, name="leaderboard"),
+    path("forest", views.forest_leaderboard, name="forest_leaderboard"),
     path("daily-streaks", views.daily_streak_leaderboard, name="daily_streak_leaderboard")
 ]

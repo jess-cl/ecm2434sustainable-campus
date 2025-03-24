@@ -45,12 +45,20 @@ class UserInventory(models.Model):
 
 class UserForest(models.Model):
     user = models.OneToOneField('accounts.CustomUser', on_delete=models.CASCADE, primary_key=True)
-    cells = models.TextField(default = "{cell_0 : [0,0,0], cell_1 : [0,0,0], cell_2 : [0,0,0], cell_3 : [0,0,0], cell_4 : [0,0,0], cell_5 : [0,0,0],"
-    " cell_6 : [0,0,0], cell_7 : [0,0,0], cell_8 : [0,0,0], cell_9 : [0,0,0], cell_10 : [0,0,0], cell_11 : [0,0,0], cell_12 : [0,0,0], cell_13 : [0,0,0],"
-    " cell_14 : [0,0,0],cell_15 : [0,0,0]}", max_length=2048)
+    cells = models.TextField(default = "0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0")
     last_growth_check_date = models.TextField(default=str(datetime.date))
+    customisations = models.TextField(default="0,1,2")
 
 class Plant(models.Model):
     requirement_type = models.IntegerField()
     rarity = models.IntegerField()
     plant_name = models.TextField(default="plant")
+
+class UserHighScore(models.Model):
+    user = models.OneToOneField('accounts.CustomUser', on_delete=models.CASCADE, primary_key=True)
+    high_score = models.IntegerField(default=0)
+
+class Customisations(models.Model):
+    customisation_type = models.IntegerField()
+    primary_colour_code = models.TextField()
+    secondary_colour_code = models.TextField()

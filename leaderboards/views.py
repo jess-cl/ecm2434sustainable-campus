@@ -1,30 +1,30 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-from .models import TreeScore
+from main.models import UserHighScore
 from dailyQuiz.models import QuizDailyStreak
 
 @login_required
-def leaderboard(request):
-    # Retrieves the top 10 players with the highest number of trees grown
-    all_player_scores = TreeScore.objects.filter(user__role='player').order_by('-score')
+def forest_leaderboard(request):
+    # Retrieves the top 10 players with the highest land sell
+    all_player_scores = UserHighScore.objects.filter(user__role='player').order_by('-high_score')
 
     user_score = None
     user_rank = None
 
-    # Retrieves the logged-in user score if they are a player
+    # Retrieves the logged-in user score if they are a player, and determines their rank in the leaderboard
     if request.user.role == 'player':
         try: 
-            user_score = TreeScore.objects.get(user=request.user)
+            user_score = UserHighScore.objects.get(user=request.user)
 
             user_rank = 0
             while True:
                 user_rank += 1
                 if all_player_scores[user_rank - 1] == user_score:
                     break
-
-        except TreeScore.DoesNotExist:
-            messages.error(request, "Your score could not be found.")
+                
+        except UserHighScore.DoesNotExist:
+            messages.error(request, "Your forest high score could not be found.")
             user_score = None
 
 

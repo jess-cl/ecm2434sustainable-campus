@@ -18,10 +18,3 @@ def reset_daily_streak():
         streak.current_streak = 0
         streak.save()
 
-# Schedule the task to run every day at midnight (00:00 UTC)
-app.conf.beat_schedule = {
-    'reset_daily_streak_midnight': {
-        'task': 'dailyQuiz.tasks.reset_daily_streak',
-        'schedule': crontab(minute=0, hour=0),  # Runs at midnight every day
-    },
-}

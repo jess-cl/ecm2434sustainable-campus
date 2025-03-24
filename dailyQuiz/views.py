@@ -84,6 +84,10 @@ def get_daily_quiz(request):
         messages.error(request, "You must be a Player to access this page.")    
         return redirect('dailyQuiz:quiz_home')
     
+    if len(QuizQuestion.objects.all()) < 10:
+        messages.error(request, "Not enough quiz questions available. Please check back later!")    
+        return redirect('dailyQuiz:quiz_home')
+
     # Checks if there has been an attempt previously on the same day, to prevent people rerolling questions
     quiz_attempt = QuizAttempt.objects.filter(user=request.user, date=timezone.now().date()).first()
 

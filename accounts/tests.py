@@ -8,6 +8,7 @@ class SetUpTest(TestCase):
     def setUp(self):
         self.signup_url=reverse('accounts:signup')
         self.login_url=reverse('accounts:login')
+        self.profile_url=reverse("accounts:profile")
 
         self.valid_user={
             'email':'test@gmail.com',
@@ -40,6 +41,15 @@ class SetUpTest(TestCase):
             'password1':'TestEmail12345',
             'password2':'unMatched54321',
         }
+
+        # Creates a test player account
+        self.player = CustomUser.objects.create_user(email ='player@gmail.com', 
+                                                    username = 'player1', 
+                                                    password = 'testpassword12345',
+                                                    first_name = 'Player',
+                                                    last_name = 'User',
+                                                    role = 'player',
+                                                    verified = True)
 
         return super().setUp()
     
@@ -100,6 +110,22 @@ class LoginTest(SetUpTest):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Your account has not been verified.")
 
+    def test_logout_view_works(self):
+        """Verifies that logging out successfully redirects to login and the user is logged out."""
+        self.client.login(username="player1", password="testpassword12345")
+
+        # Ensure the user is authenticated before logging out
+        response = self.client.get(reverse("announcements:announcement_list"))  # A page that cant be accessed without logging in
+        self.assertEqual(response.status_code, 200)  # Verifiy the user renders the page
+
+        response = self.client.get(reverse("accounts:logout")) # Log out
+
+        self.assertRedirects(response, reverse("accounts:login")) # Verifies the user is sent to login page
+
+        # Verifies the user cant access the announcement_list page no longer
+        response = self.client.get(reverse("announcements:announcement_list"))
+        self.assertEqual(response.status_code, 302)
+
 
 class VerificationTest(SetUpTest):
     def test_send_verification_email(self):
@@ -136,3 +162,70 @@ class VerificationTest(SetUpTest):
         # Verifies if the user is now verified
         user = CustomUser.objects.get(username='testUser123')
         self.assertTrue(user.verified)
+
+class ProfileTest(SetUpTest):
+    def test_profile_page(self):
+        """Verifies that the profile page loads correctly for logged-in users."""
+        self.client.login(username="player1", password="testpassword12345")
+        response = self.client.get(self.profile_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "accounts/profile.html")
+        self.assertContains(response, self.player.username)
+
+    def test_change_username(self):
+        """Test that users can successfully change their username."""
+        self.client.login(username="player1", password="testpassword12345")
+        response = self.client.post(reverse("accounts:change_username"), {
+            "username": "testusername"
+        })
+        self.player.refresh_from_db()
+        self.assertEqual(self.player.username, "testusername")
+        self.assertRedirects(response, self.profile_url)
+
+    def test_change_password(self):
+        """Verify that users can change their password if the correct info is provided."""
+        self.client.login(username="player1", password="testpassword12345")
+        response = self.client.post(reverse("accounts:change_password"), {
+            "old_password": "testpassword12345",
+            "new_password1": "newtestpassword12345",
+            "new_password2": "newtestpassword12345",
+        })
+        self.player.refresh_from_db()
+        self.assertTrue(self.player.check_password("newtestpassword12345"))
+        self.assertRedirects(response, self.profile_url)
+
+    def test_change_password_invalid(self):
+        """Verify that the password stays the same if one of the change password fields are wrong"""
+        self.client.login(username="player1", password="testpassword12345")
+
+        # Attempt to change password with incorrect old password
+        self.client.post(reverse("accounts:change_password"), {
+            "old_password": "wrongpassword",
+            "new_password1": "newtestpassword12345",
+            "new_password2": "newtestpassword12345",
+        })
+        self.player.refresh_from_db()
+        self.assertFalse(self.player.check_password("newtestpassword12345")) 
+        self.assertTrue(self.player.check_password("testpassword12345"))  
+
+        # Attempt to change password with mismatched new passwords
+        self.client.post(reverse("accounts:change_password"), {
+            "old_password": "testpassword12345",
+            "new_password1": "newtestpassword12345",
+            "new_password2": "mismatchnewpassword",
+        })
+        self.player.refresh_from_db()
+        self.assertFalse(self.player.check_password("newtestpassword12345"))  
+        self.assertTrue(self.player.check_password("testpassword12345"))  
+
+
+    def test_delete_account(self):
+        """Verify that users can delete their account."""
+        self.assertTrue(CustomUser.objects.filter(username="player1").exists())
+
+        self.client.login(username="player1", password="testpassword12345")
+        self.client.post(reverse("accounts:delete_account"), {
+            "delete_password": "testpassword12345"
+        })
+
+        self.assertFalse(CustomUser.objects.filter(username="player1").exists())

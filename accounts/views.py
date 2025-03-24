@@ -8,12 +8,10 @@ from django.db import transaction
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from shop.models import UserBalance
-from leaderboards.models import TreeScore
 from .forms import ProfileImageForm, SignUpForm, LoginForm, ChangeUsernameForm
 from .models import Profile, CustomUser
 from dailyQuiz.models import QuizDailyStreak
-
-
+from main.models import UserHighScore
 
 def signup_page(request):
     """Allows new users to create accounts. This view handles user registration through 
@@ -67,10 +65,6 @@ def email_verification(request, token: str):
 
         # Creates a user balance for player
         UserBalance.objects.create(user_id=user)
-
-        # Creates a score counter for the tree game for player
-        TreeScore.objects.create(user=user)
-
 
         QuizDailyStreak.objects.create(user=user)
   
@@ -257,32 +251,32 @@ def delete_account(request):
             password = request.POST.get('delete_password', '')
 
             if not user.check_password(password):
-                messages.error(request, '密码验证失败')
+                messages.error(request, 'Password verification failed.')
                 return redirect('accounts:profile')
 
-            # 手动清理所有可能关联数据
+            # Manually clear all possible associated data
             with transaction.atomic():
-                # 清理用户点赞记录
+                # Clear the user likes record
                 # if 'announcements' in settings.INSTALLED_APPS:
                 #     from announcements.models import Announcement
                     # Announcement.objects.filter(likes=user).update(likes=user)
                     # user.liked_announcements.clear()
 
-                # 清理其他关联数据
+                # Clear other associated data
                 UserBalance.objects.filter(user_id=user).delete()
-                TreeScore.objects.filter(user=user).delete()
+                UserHighScore.objects.filter(user=user).delete()
 
-                # 执行登出
+                
                 logout(request)
 
-                # 删除用户
+            
                 user.delete()
 
-            messages.success(request, '账号已永久删除')
+            messages.success(request, 'Account permanently deleted.')
             return redirect('accounts:login')
 
         except Exception as e:
-            messages.error(request, f'删除失败: {str(e)}')
+            messages.error(request, f'Deletion failed: {str(e)}')
             return redirect('accounts:profile')
 
     return redirect('accounts:profile')

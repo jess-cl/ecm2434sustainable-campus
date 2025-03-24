@@ -159,14 +159,30 @@
     <div class="button-popup" id="customise-popup">
       <div class="popup-title">
         <div id="close-customise-popup" class="close-popup">
-          <i class="bi bi-x"
-            style="width: 100%; height: 100%; display: inline-block; font-size: max(4vw, 40px);"></i>
+          <i class="bi bi-x" style="width: 100%; height: 100%; display: inline-block; font-size: max(4vw, 40px);"></i>
         </div>
         <div style="font-size: max(2.5vw, 25px);">Customise</div>
       </div>
+      <div style="position: absolute; width: 95%; top: 10%; bottom:2%; margin-left: 2.5%; display: flex; flex-direction: column; justify-content: space-between;">
+        <div style="width: 100%; height: 35%">
+          <h5>Customise Sky</h5>
+          <div class="horizontal-grid-container" id="customise-grid-sky"
+            style="width: 100%; background-color: rgba(216, 216, 216, 0.582)"></div>
+        </div>
+        <div style="width: 100%; height: 35%;">
+          <h5>Customise Land</h5>
+          <div class="horizontal-grid-container" id="customise-grid-land"
+            style="width: 100%; background-color: rgba(216, 216, 216, 0.582)"></div>
+        </div>
+        <div style="width: 100%; ; height: 35%;">
+          <h5>Customise Grid</h5>
+          <div class="horizontal-grid-container" id="customise-grid-grid"
+            style="width: 100%; background-color: rgba(216, 216, 216, 0.582);"></div>
+        </div>
 
-      <div class="grid-container" id="customise-grid" style="width: 90%;">
+
       </div>
+
     </div>
 
     <div class="card button-popup" id="sell-popup" style="display: none;">
@@ -196,8 +212,7 @@
     <div id="recycling-popup">
       <div class="popup-title">
         <div id="close-recycling-popup" class="close-popup">
-          <i class="bi bi-x"
-            style="width: 100%; height: 100%; display: inline-block; font-size: max(4vw, 40px); "></i>
+          <i class="bi bi-x" style="width: 100%; height: 100%; display: inline-block; font-size: max(4vw, 40px); "></i>
         </div>
         <div style="font-size: max(2.5vw, 25px);">Recycling</div>
       </div>
@@ -231,6 +246,9 @@
     <div id="retrieved-inventory-content" class="data-container">{{user_inventory}}</div>
     <div id="retrieved-plant-content" class="data-container">{{plant_list}}</div>
     <div id="retrieved-value" class="data-container">{{forest_value}}</div>
+    <div id="retrieved-customisation-content" class="data-container">{{customisations}}</div>
+    <div id="retrieved-selected-customisation-content" class="data-container">{{selected_customisations}}</div>
+    
   </div>
 
 

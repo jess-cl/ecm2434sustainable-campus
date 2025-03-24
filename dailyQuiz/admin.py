@@ -6,10 +6,11 @@ from .models import QuizQuestion, QuizAttempt, QuizDailyStreak
 
 class QuizQuestionAdmin(admin.ModelAdmin):
     # Fields to display in the list view
-    list_display = ('question', 'option_a', 'option_b', 'option_c', 'option_d', 'correct_option')
-
+    list_display = ('id', 'question', 'option_a', 'option_b', 'option_c', 'option_d', 'correct_option')
+    
     # Fields that can be edited directly in the list view
-    list_editable = ('correct_option',)
+    list_editable = ('question', 'option_a', 'option_b', 'option_c', 'option_d', 'correct_option')
+    list_display_links = ('id',)  # Use 'id' as the link to the edit page
 
     # Add search functionality
     search_fields = ('question',)

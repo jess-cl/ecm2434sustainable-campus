@@ -25,7 +25,7 @@
             >
               <i class="lni lni-wallet-1 me-1"></i> Purchased Items
             </a>
-            <span
+            <a href="{% url 'shop:transaction_history' user.id %}"
               class="badge bg-primary fs-6 p-2 lh-1 d-flex align-items-center"
             >
               Balance: {{ user_balance.currency }} 

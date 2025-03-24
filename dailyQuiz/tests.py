@@ -244,7 +244,3 @@ class DailyStreakResetTest(SetUpTest):
         self.player_streak.refresh_from_db()
 
         self.assertEqual(self.player_streak.current_streak, 0)
-        
-    
-
-    
