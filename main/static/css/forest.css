@@ -55,7 +55,7 @@
     position: absolute;
     top: min(27%, max(18vw, 12.5vh));
     right: 0;
-    width: 50.0011%; // added because on larger screens, the backgrounds don't meet
+    width: 50.0011%;
     min-height: 73%;
     max-height: 81%;
     height: 85%;
@@ -309,8 +309,6 @@
     left: 0;
 }
 
-
-
 .recycling-dropzone {
     position: relative;
     height: 90%;
@@ -335,6 +333,13 @@
 .expand-button {
     &:hover {
         transform: scaleX(102%) scaleY(110%);
+    }
+}
+
+.expand-cell {
+    transition: scale 0.3s linear;
+    &:hover {
+        transform: scale(105%);
     }
 }
 

@@ -168,6 +168,7 @@ function onCustomiseCellClick(cell) {                                           
             break;
     }
     //saves updated customisation
+    document.getElementById("retrieved-selected-customisation-content").innerHTML = selectedCustomisations[0] + "," + selectedCustomisations[1] + "," + selectedCustomisations[2];
     ajaxCallSaveCustomisations(selectedCustomisations[0] + "," + selectedCustomisations[1] + "," + selectedCustomisations[2]);
 }
 
@@ -342,7 +343,7 @@ function generatePlantSelectionGrid(cols) {                                     
         //creating selection cells
         let gridCell = document.createElement("div");
         const addedCell = gridContainer.appendChild(gridCell);
-        addedCell.className = "card col-lg-3 m-1 bg-light";
+        addedCell.className = "card col-lg-3 m-1 bg-light expand-cell";
 
         //setting attributes of plant to cell 
         addedCell.id = "plant-selection-cell-" + i;
@@ -400,7 +401,7 @@ function generateCustomisationGrid() {                                          
         }
 
         function createCustomCell(cell, cellType) {
-            cell.className = "btn";
+            cell.className = "btn expand-button";
             cell.id = "custom-" + cellType + "-cell-" + i++;
             cell.customisationId = currentCustomisation[0];
             cell.customisationType = currentCustomisation[1];
@@ -566,6 +567,8 @@ function ajaxCallAddTokens(tokens) {
         url: "add_tokens",
         type: 'POST',
         data: { 'number_of_tokens': tokens },
+        cache: false,
+        async: false,
         success: function (response) {
             console.log("Response: ", response);
         },
