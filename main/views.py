@@ -71,7 +71,7 @@ def forest(request):
     for record in Customisations.objects.all():
         customisation_string += str(record.id) + "," + str(record.customisation_type) + "," + str(record.primary_colour_code) + "," + str(record.secondary_colour_code) + ";"
 
-    return render(request, "forest.html", {"user_forest" : user_forest.cells, "user_inventory" : user_inventory_str, "plant_list" : plant_string, "forest_value" : value, "customisations" : customisation_string})
+    return render(request, "forest.html", {"user_forest" : user_forest.cells, "user_inventory" : user_inventory_str, "plant_list" : plant_string, "forest_value" : value, "customisations" : customisation_string, "selected_customisations" : user_forest.customisations})
 
 @login_required
 def check_if_plants_should_grow(forest):

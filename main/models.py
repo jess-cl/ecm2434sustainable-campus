@@ -47,6 +47,7 @@ class UserForest(models.Model):
     user = models.OneToOneField('accounts.CustomUser', on_delete=models.CASCADE, primary_key=True)
     cells = models.TextField(default = "0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0")
     last_growth_check_date = models.TextField(default=str(datetime.date))
+    customisations = models.TextField(default="0,1,2")
 
 class Plant(models.Model):
     requirement_type = models.IntegerField()
