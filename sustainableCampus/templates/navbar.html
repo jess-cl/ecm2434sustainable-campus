@@ -91,8 +91,6 @@
             aria-labelledby="dropdownUser"
           >
             <li><a class="dropdown-item py-2 px-3 {% if '/accounts/profile/' in request.path %}active{% endif %}" href="/accounts/profile/">Profile</a></li>
-            <li><a class="dropdown-item py-2 px-3 {% if '/settings/' in request.path %}active{% endif %}" href="#">Settings</a></li>
-            <li><a class="dropdown-item py-2 px-3 {% if '/achievements/' in request.path %}active{% endif %}" href="#">Achievements</a></li>
             <li><hr class="dropdown-divider my-1 mx-3"></li>
             <li><a class="dropdown-item py-2 px-3" href="{% url 'accounts:logout' %}">Sign out</a></li>
           </ul>
@@ -180,12 +178,7 @@
           <a href="/accounts/profile/" class="nav-link rounded-pill py-2 px-3 d-block">
             Profile
           </a>
-        </li>
-        <li class="mb-2 {% if '/settings/' in request.path %}active{% endif %}">
-          <a href="#" class="nav-link rounded-pill py-2 px-3 d-block">
-            Settings
-          </a>
-        </li>
+        </li> 
         <li>
           <a href="/accounts/login/" class="nav-link rounded-pill py-2 px-3 d-block">
             Sign out
