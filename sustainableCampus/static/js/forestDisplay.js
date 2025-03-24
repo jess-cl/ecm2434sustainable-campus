@@ -1,14 +1,13 @@
 //onClick events -------------------------------------------------------------------------------------
 
 function onForestCellClick(cell) {
-    console.log(cell.id + " clicked");
     let occupiedPopup = document.getElementById("occupied-popup");
     let emptyPopup = document.getElementById("empty-popup");
 
     emptyPopup.selectedCell = cell;
     if (cell.plantId == "0") { //if cell is empty
         if (occupiedPopup.style.display == "block") { closePopup(occupiedPopup); }  //closes other popup
-        
+
         //opens popup to plant tree
         openPopup(emptyPopup);
     }
@@ -23,7 +22,7 @@ function onForestCellClick(cell) {
         document.getElementById("selected-plant-image").src = cell.plantImagePath;
         document.getElementById("selected-plant-description").innerHTML = "Growth stage: " + cell.plantGrowthStage
         let resource = "";
-        switch (plantRequirementType){
+        switch (plantRequirementType) {
             case "0":
                 resource = "Water";
                 break;
@@ -130,6 +129,38 @@ function onPlantCellClick(cell) {
     document.getElementById("selected-seed-resource").innerHTML = "Plant Resource: " + resourceName;
 }
 
+function onCustomiseCellClick(cell) {
+    //checks type of customisation and applies to appropriate area
+    switch (cell.customisationType) {
+        case "0":   //sky
+            document.getElementById("forest-view").style.backgroundImage = "linear-gradient(" + cell.primaryColour + ", " + cell.secondaryColour + ")";
+            break;
+        case "1":   //ground
+            document.getElementById("forest-floor-texture").style.backgroundColor = cell.primaryColour;
+            document.getElementById("forest-background-left").style.backgroundColor = cell.secondaryColour;
+            //brighten secondary colour for lighter side of column
+            let colorValue = parseInt(colorHex.slice(1), 16);           //remove # from start
+            let tertColor = "#" + (((colorValue & 0x0000FF) + adjustment) |
+                ((((colorValue >> 8) & 0x00FF) + adjustment) << 8) |
+                (((colorValue >> 16) + adjustment) << 16)).toString(16);
+            document.getElementById("forest-background-right").style.backgroundColor = adjustColorBrightness(tertColor, 20);
+            break;
+        case "2":   //grid
+            let elements = document.getElementsByClassName("grid-item");
+            console.log(elements);
+            for (var i = 0; i < elements.length; i++) {
+                elements[i].style.borderColor = cell.primaryColour;
+            }
+            break;
+    }
+}
+
+//increases brightness of secondary colour
+function adjustColorBrightness(colorHex, adjustment) {
+
+    return "#" + newColor.toString(16);
+}
+
 function addPlant() {
     let plantButton = document.getElementById("plant-selected-button");
     let emptyPopup = document.getElementById("empty-popup");
@@ -159,7 +190,7 @@ function addPlant() {
     makeForestChange(selectedForestCell.gridNumber, [selectedPlantId, selectedForestCell.plantGrowthStage, selectedForestCell.plantRequirement])
 }
 
-function giveResource(){
+function giveResource() {
     const currentCell = document.getElementById("empty-popup").selectedCell;
     const resourceType = plantArray[currentCell.plantId][1];
     ajaxCallUpdateInvOnPage();
@@ -174,13 +205,13 @@ function giveResource(){
         ajaxCallUpdateInvOnPage();
 
         makeForestChange(currentCell.gridNumber, [currentCell.plantId, currentCell.plantGrowthStage, currentCell.plantRequirement])
-    
+
         //update on page
         const resourceButton = document.getElementById("selected-plant-requirement-button");
         resourceButton.innerHTML = "Plant seems happy!";
         resourceButton.disabled = true;
 
-        
+
     }
 
 }
@@ -329,30 +360,43 @@ function generatePlantSelectionGrid(cols) {
     }
 }
 
-function generateCustomiseGrid(gridNum) {
-    const gridContainer1 = document.getElementById("customise-grid-sky");
-    for (let i = 0; i < (gridNum); i++) {
-        let gridCell = document.createElement("div");
-        const addedCell = gridContainer1.appendChild(gridCell);
-        addedCell.className = "horizontal-grid-item";
-        addedCell.id = "custom-sky-cell-" + i;
-        addedCell.addEventListener("click", function () { onCustomiseCellClick(addedCell); });
-    }
-    const gridContainer2 = document.getElementById("customise-grid-land");
-    for (let i = 0; i < (gridNum); i++) {
-        let gridCell = document.createElement("div");
-        const addedCell = gridContainer2.appendChild(gridCell);
-        addedCell.className = "horizontal-grid-item";
-        addedCell.id = "custom-land-cell-" + i;
-        addedCell.addEventListener("click", function () { onCustomiseCellClick(addedCell); });
-    }
-    const gridContainer3 = document.getElementById("customise-grid-grid");
-    for (let i = 0; i < (gridNum); i++) {
-        let gridCell = document.createElement("div");
-        const addedCell = gridContainer3.appendChild(gridCell);
-        addedCell.className = "horizontal-grid-item";
-        addedCell.id = "custom-grid-cell-" + i;
-        addedCell.addEventListener("click", function () { onCustomiseCellClick(addedCell); });
+function generateCustomisationGrid() {
+    const customisationList = document.getElementById("retrieved-customisation-content").innerHTML;
+    const skyContainer = document.getElementById("customise-grid-sky");
+    const landContainer = document.getElementById("customise-grid-land");
+    const gridContainer = document.getElementById("customise-grid-grid");
+    let i = 0;
+    //every customisation in the database
+    for (const item of customisationList.split(";")) {
+        let currentCustomisation = item.split(",");
+        let currentCell = document.createElement("div");
+        //decide whether it is a sky, land or grid customisation
+        switch (currentCustomisation[1]) {
+            case "0":   //sky
+                let skyCell = skyContainer.appendChild(currentCell);
+                createCustomCell(skyCell, "sky");
+                break;
+            case "1":   //ground
+                let landCell = landContainer.appendChild(currentCell);
+                createCustomCell(landCell, "land");
+                break;
+            case "2":   //grid
+                let gridCell = gridContainer.appendChild(currentCell);
+                createCustomCell(gridCell, "grid");
+                break;
+        }
+
+        function createCustomCell(cell, cellType) {
+            cell.className = "horizontal-grid-item";
+            cell.id = "custom-" + cellType + "-cell-" + i++;
+            cell.customisationId = currentCustomisation[0];
+            cell.customisationType = currentCustomisation[1];
+            cell.primaryColour = currentCustomisation[2];
+            cell.secondaryColour = currentCustomisation[3];
+            cell.style.backgroundImage = "linear-gradient(" + cell.primaryColour + ", " + cell.secondaryColour + ")";
+            cell.addEventListener("click", function () { onCustomiseCellClick(cell); });
+        }
+
     }
 }
 
@@ -484,7 +528,7 @@ function ajaxCallUpdateInv(plantId) {
         type: 'POST',
         cache: false,
         async: false,
-        data: {'plant_id': plantId},
+        data: { 'plant_id': plantId },
         success: function (response) {
             console.log("Response: ", response);
         },
@@ -514,7 +558,7 @@ function ajaxCallUseConsumeable(consumeable_id) {
         type: 'POST',
         cache: false,
         async: false,
-        data: {'consumeable_id': consumeable_id},
+        data: { 'consumeable_id': consumeable_id },
         success: function (response) {
             console.log("Response: ", response);
         },
@@ -559,9 +603,9 @@ function sellForest() {
 
 let plantArray = getPlants(); //[[plantid, requirement_type, rarity, plant_name]]
 generateForestGrid(4, 4);
-generateCustomiseGrid(6);
 generatePlantSelectionGrid(2);
 generateRecycling();
+generateCustomisationGrid()
 
 document.getElementById("empty-popup").selectedCell = null;
 document.getElementById("customise-button").addEventListener("click", onCustomiseClick);

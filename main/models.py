@@ -56,3 +56,8 @@ class Plant(models.Model):
 class UserHighScore(models.Model):
     user = models.OneToOneField('accounts.CustomUser', on_delete=models.CASCADE, primary_key=True)
     high_score = models.IntegerField(default=0)
+
+class Customisations(models.Model):
+    customisation_type = models.IntegerField()
+    primary_colour_code = models.TextField()
+    secondary_colour_code = models.TextField()

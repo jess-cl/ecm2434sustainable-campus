@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from pathlib import Path
-from .models import UserForest, UserInventory, Plant, UserHighScore
+from .models import UserForest, UserInventory, Plant, UserHighScore, Customisations
 from shop.models import UserBalance
 from django.http import HttpResponse, JsonResponse
 from random import randint
@@ -66,8 +66,12 @@ def forest(request):
     print(user_inventory_str)
     # calculates the forest value on page load
     value = calculate_forest_value(user_forest)
+    # gets list of all customisation options
+    customisation_string = ""
+    for record in Customisations.objects.all():
+        customisation_string += str(record.id) + "," + str(record.customisation_type) + "," + str(record.primary_colour_code) + "," + str(record.secondary_colour_code) + ";"
 
-    return render(request, "forest.html", {"user_forest" : user_forest.cells, "user_inventory" : user_inventory_str, "plant_list" : plant_string, "forest_value" : value})
+    return render(request, "forest.html", {"user_forest" : user_forest.cells, "user_inventory" : user_inventory_str, "plant_list" : plant_string, "forest_value" : value, "customisations" : customisation_string})
 
 @login_required
 def check_if_plants_should_grow(forest):
@@ -363,7 +367,7 @@ def get_plant_list(request):
     plantString = ""
     for plant in Plant.objects.all():
         plantString += plant.id + "," + plant.requirement_type + "," + plant.rarity + "," + plant.plant_name + ";"
-
+    print("plants")
     return JsonResponse({"plant_list" : plantString})
 
 @login_required
