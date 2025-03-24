@@ -47,6 +47,7 @@ class UserForest(models.Model):
     user = models.OneToOneField('accounts.CustomUser', on_delete=models.CASCADE, primary_key=True)
     cells = models.TextField(default = "0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0;0,0,0")
     last_growth_check_date = models.TextField(default=str(datetime.date))
+    customisations = models.TextField(default="0,1,2")
 
 class Plant(models.Model):
     requirement_type = models.IntegerField()
@@ -56,3 +57,8 @@ class Plant(models.Model):
 class UserHighScore(models.Model):
     user = models.OneToOneField('accounts.CustomUser', on_delete=models.CASCADE, primary_key=True)
     high_score = models.IntegerField(default=0)
+
+class Customisations(models.Model):
+    customisation_type = models.IntegerField()
+    primary_colour_code = models.TextField()
+    secondary_colour_code = models.TextField()
