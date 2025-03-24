@@ -156,33 +156,25 @@
     </div>
 
     <!-- popups from buttons -->
-    <div class="button-popup" id="customise-popup">
-      <div class="popup-title">
-        <div id="close-customise-popup" class="close-popup">
-          <i class="bi bi-x" style="width: 100%; height: 100%; display: inline-block; font-size: max(4vw, 40px);"></i>
+    <div class="card button-popup" id="customise-popup" style="display: none;">
+      <div class="card-header d-flex justify-content-between align-items-center p-2"> 
+        <h3 class="card-title">Customise</h3>
+        <button type="button" class="btn-close" id="close-customise-popup"></button>
+      </div> 
+      <div class="card-body">
+        <div class="row">
+          <h5 class="mb-0">Customise Sky</h5>
+          <div class="d-flex flex-wrap gap-1" id="customise-grid-sky"></div>
         </div>
-        <div style="font-size: max(2.5vw, 25px);">Customise</div>
+        <div class="row">
+          <h5 class="mt-2 mb-0">Customise Land</h5>
+          <div class="d-flex flex-wrap gap-1" id="customise-grid-land"></div>
+        </div>
+        <div class="row">
+          <h5 class="mt-2 mb-0">Customise Grid</h5>
+          <div class="d-flex flex-wrap gap-1" id="customise-grid-grid"></div>
+        </div>
       </div>
-      <div style="position: absolute; width: 95%; top: 10%; bottom:2%; margin-left: 2.5%; display: flex; flex-direction: column; justify-content: space-between;">
-        <div style="width: 100%; height: 35%">
-          <h5>Customise Sky</h5>
-          <div class="horizontal-grid-container" id="customise-grid-sky"
-            style="width: 100%; background-color: rgba(216, 216, 216, 0.582)"></div>
-        </div>
-        <div style="width: 100%; height: 35%;">
-          <h5>Customise Land</h5>
-          <div class="horizontal-grid-container" id="customise-grid-land"
-            style="width: 100%; background-color: rgba(216, 216, 216, 0.582)"></div>
-        </div>
-        <div style="width: 100%; ; height: 35%;">
-          <h5>Customise Grid</h5>
-          <div class="horizontal-grid-container" id="customise-grid-grid"
-            style="width: 100%; background-color: rgba(216, 216, 216, 0.582);"></div>
-        </div>
-
-
-      </div>
-
     </div>
 
     <div class="card button-popup" id="sell-popup" style="display: none;">

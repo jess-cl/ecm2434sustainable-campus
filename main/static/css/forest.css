@@ -116,11 +116,9 @@
     position: relative;
     display: flex;
     flex-direction: row;
-    height: 70%;
     gap: 2%;
     overflow-x: auto;
     overflow-y: hidden;
-    max-height: 100%;
     width: 100%;
     top: 2px;
     border-radius: 5px;
@@ -129,7 +127,6 @@
 .horizontal-grid-item {
     display: grid;
     place-items: center;
-    height: 80%;
     grid-template-columns: 1fr;
     aspect-ratio: 1/1;
     border: 1px solid #0f0;

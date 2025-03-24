@@ -23,7 +23,7 @@
               href="{% url 'shop:purchased_items'%}"
               class="btn btn-outline-success p-2 lh-1 d-flex align-items-center"
             >
-              <i class="lni lni-wallet-1 me-1"></i> Purchased Items
+              Purchased Items
             </a>
             <a href="{% url 'shop:transaction_history' user.id %}"
               class="badge bg-primary fs-6 p-2 lh-1 d-flex align-items-center"
@@ -34,19 +34,19 @@
                 width="20"
                 class="ms-1"
               />
-            </span>
+            </a>
           {% else %}
             <a
-            href="{% url 'shop:add_shop_item'%}"
-            class="btn btn-outline-success p-2 lh-1 d-flex align-items-center"
+              href="{% url 'shop:add_shop_item'%}"
+              class="btn btn-outline-success p-2 lh-1 d-flex align-items-center"
             >
-            <i class="lni lni-wallet-1 me-1"></i> Add New Item
+              Add New Item
             </a>
             <a
-            href="{% url 'shop:redeem_page'%}"
-            class="btn btn-outline-success p-2 lh-1 d-flex align-items-center"
+              href="{% url 'shop:redeem_page'%}"
+              class="btn btn-outline-success p-2 lh-1 d-flex align-items-center"
             >
-            <i class="lni lni-wallet-1 me-1"></i> Redeem Player Item
+              Redeem Player Item
             </a>
           {% endif %}
         </div>

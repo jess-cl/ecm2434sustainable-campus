@@ -390,7 +390,7 @@ function generateCustomisationGrid() {
         }
 
         function createCustomCell(cell, cellType) {
-            cell.className = "horizontal-grid-item";
+            cell.className = "btn";
             cell.id = "custom-" + cellType + "-cell-" + i++;
             cell.customisationId = currentCustomisation[0];
             cell.customisationType = currentCustomisation[1];

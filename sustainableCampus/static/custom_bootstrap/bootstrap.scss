@@ -11,13 +11,10 @@ $white: #fffdf9;
 $black: #0b171c;
 $green-light: #93bbab; 
 $green-medium: #44897a;
-$green-dark: #083400;
 $green-vibrant: #19a757;
 $blue-teal: #62a59a;
-$forest-green: #598d72;
 $sunny-yellow: #e9ca1a;
 $alert-red: #f50c23;
-$lavender-light: #eae5f4;
 
 $gray-100: #f8f7f4;
 $gray-200: #e9e7e2;
@@ -171,20 +168,6 @@ $toast-header-border-width: 0;
 @import "node_modules/bootstrap/scss/bootstrap";
 
 // Custom utility classes
-.text-medium {
-  font-weight: $font-weight-medium;
-}
-
-.rounded-pill-start {
-  border-top-left-radius: 100rem !important;
-  border-bottom-left-radius: 100rem !important;
-}
-
-.rounded-pill-end {
-  border-top-right-radius: 100rem !important;
-  border-bottom-right-radius: 100rem !important;
-}
-
 .card-hover {
   transition: transform 0.2s ease-out, box-shadow 0.2s ease-out !important;
   will-change: transform, box-shadow;
@@ -202,9 +185,6 @@ $toast-header-border-width: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: $font-weight-medium;
-  background-color: $green-light;
-  color: $white;
 }
 
 .avatar-sm {
