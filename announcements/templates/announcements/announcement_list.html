@@ -125,12 +125,12 @@
     <div class="row g-4">
       {% for announcement in announcements %}
       <div class="col-12 col-md-6 col-lg-4">
-        <article class="card card-hover h-100 overflow-hidden">
+        <article class="card card-hover h-100 overflow-hidden" data-id="{{ announcement.id }}">
           <!-- Card Image Container -->
           <figure class="card-img-wrapper">
             {% if announcement.image %}
             <img src="{{ announcement.image.url }}" class="card-img-top" 
-              alt="{{ announcement.title }}" style="height: 250px; object-fit: cover;">
+              alt="{{ announcement.title }}" style="height: 250px; object-fit:contain;">
             {% else %}
             <img src="" class="card-img-top" 
               style="height: 250px; object-fit: contain;">
@@ -192,7 +192,7 @@
             </div>
             
             <!-- QR Code Button (For Specific Roles) -->
-            {% if announcement.is_event and user_role == 'gameKeeper' or user_role == 'developer' %}
+            {% if announcement.is_event %}
             <div class="mt-3">
               <a href="{% url 'announcements:display_event_qr_code' announcement.event.event_code %}" 
                 class="btn btn-primary btn-sm rounded-pill">
@@ -210,6 +210,12 @@
             <div class="meta-data d-none">
               {{ announcement.author }} · {{ announcement.author.role }} · {{ announcement.created_at|date:"SHORT_DATE_FORMAT" }}
             </div>
+            
+            <!-- Hidden Event Link (For Modal) -->
+            {% if announcement.is_event %}
+              <a href="{% url 'announcements:display_event_qr_code' announcement.event.event_code %}" 
+                class="event-link d-none"></a>
+            {% endif %}
           </div>
         </article>
       </div>
@@ -227,9 +233,40 @@
           </div>
 
           <!-- Modal Body -->
-          <div class="modal-body p-4 pt-2">
+           <div class="modal-body p-4 pt-2">
             <img src="" class="modal-img img-fluid mb-4 rounded-3" id="modalImage" />
-            <p id="modalContent" class="text-secondary"></p>
+            <p id="modalContent" class="text-secondary mb-4"></p>
+            
+            <!-- QR Code Section -->
+            <div id="modalQrCode" class="text-center mb-4" style="display: none;">
+              <h6 class="mb-3">Event QR Code</h6>
+              <img id="qrCodeImage" 
+                   src="" 
+                   alt="QR Code"
+                   class="img-fluid rounded-3 border p-2 shadow-sm" />
+              <p class="small text-muted mt-2">Scan this code to register for the event</p>
+            </div>
+            
+            <!-- Engagement Controls -->
+            <div class="d-flex justify-content-center gap-3 mt-4">
+              <!-- Like Button -->
+              <form id="modalLikeForm" method="post" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline-primary rounded-pill">
+                  <i class="bi bi-hand-thumbs-up"></i>
+                  
+                  <span class="ms-1" id="likeCount">0</span>
+                </button>
+              </form>
+
+              <!-- Dislike Button -->
+              <form id="modalDislikeForm" method="post" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline-danger rounded-pill">
+                  <i class="bi bi-hand-thumbs-down"></i>
+                </button>
+              </form>
+            </div>
           </div>
 
           <!-- Modal Footer -->
@@ -244,65 +281,87 @@
     <!-- Bootstrap JS -->
     <script src="{% static '/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
     <script>
-     document.addEventListener("DOMContentLoaded", () => {
-  const cards = document.querySelectorAll(".card");
-  const modal = new bootstrap.Modal(document.getElementById("announcementModal"));
-
-  cards.forEach((card) => {
-    card.addEventListener("click", (event) => {
-      if (event.target.closest("button, form")) return; // Prevent clicks on buttons/forms
-
-      // Extract data from card elements
-      const title = card.querySelector(".card-title").textContent;
-      const content = card.querySelector(".full-content").textContent;
-      const metaData = card.querySelector(".meta-data").textContent;
-      const image = card.querySelector("img").src;
-
-      // Debugging: Log extracted data
-      console.log({ title, content, metaData, image });
-
-      // Update modal content
-      document.getElementById("modalTitle").textContent = title;
-      document.getElementById("modalContent").textContent = content;
-      document.getElementById("modalImage").src = image;
-      document.getElementById("modalMetaData").textContent = metaData;
-
-      // Show the modal
-      modal.show();
-    });
-  });
-
-  // Auto-dismiss toasts after 5 seconds
-  const toasts = document.querySelectorAll('.toast');
-  toasts.forEach(toast => {
-    setTimeout(() => {
-      const bsToast = bootstrap.Toast.getInstance(toast);
-      if (bsToast) bsToast.hide();
-    }, 5000);
-  });
-});
+      document.addEventListener("DOMContentLoaded", () => {
+        const cards = document.querySelectorAll(".card");
+        const modal = new bootstrap.Modal(document.getElementById("announcementModal"));
+    
+        cards.forEach((card) => {
+          card.addEventListener("click", (event) => {
+            if (event.target.closest("button, form, a")) return;
+    
+            // Extract data from card elements
+            const title = card.querySelector(".card-title").textContent;
+            const content = card.querySelector(".full-content").textContent;
+            const metaData = card.querySelector(".meta-data").textContent;
+            const image = card.querySelector(".card-img-top").src;
+            const isEvent = card.querySelector(".event-link") !== null;
+            const likeCount = card.querySelector(".btn-outline-primary span")?.textContent || "0";
+            const likeFormAction = card.querySelector("form[action*='like']")?.action;
+            const dislikeFormAction = card.querySelector("form[action*='dislike']")?.action;
+            const qrCodeUrl = isEvent ? card.querySelector(".event-link").href : null;
+    
+            // Update modal content
+            document.getElementById("modalTitle").textContent = title;
+            document.getElementById("modalContent").textContent = content;
+            document.getElementById("modalImage").src = image;
+            document.getElementById("modalMetaData").textContent = metaData;
+            document.getElementById("likeCount").textContent = likeCount;
+    
+            // Update form actions and styles
+            const modalLikeForm = document.getElementById("modalLikeForm");
+            const modalDislikeForm = document.getElementById("modalDislikeForm");
+            
+            if (likeFormAction) {
+              modalLikeForm.action = likeFormAction;
+              const likeBtn = card.querySelector("form[action*='like'] button");
+              modalLikeForm.querySelector("button").className = likeBtn.className.replace("btn-sm", "btn");
+              
+              modalLikeForm.querySelector("i").className = likeBtn.querySelector("i").className;
+            }
+            
+            if (dislikeFormAction) {
+              modalDislikeForm.action = dislikeFormAction;
+              const dislikeBtn = card.querySelector("form[action*='dislike'] button");
+              modalDislikeForm.querySelector("button").className = dislikeBtn.className.replace("btn-sm", "btn");
+              modalDislikeForm.querySelector("i").className = dislikeBtn.querySelector("i").className;
+            }
+    
+        
+            // Show the modal
+            modal.show();
+          });
+        });
+    
+        // Auto-dismiss toasts after 5 seconds
+        const toasts = document.querySelectorAll('.toast');
+        toasts.forEach(toast => {
+          setTimeout(() => {
+            const bsToast = bootstrap.Toast.getInstance(toast);
+            if (bsToast) bsToast.hide();
+          }, 5000);
+        });
+      });
     </script>
   </div>
 
-    <!-- Toast Notifications -->
-    {% if messages %}
-    <div class="toast-container position-fixed top-0 end-0 p-3">
-      {% for message in messages %}
-        {% if 'success' in message.tags %}
-          <div class="toast show align-items-center text-white bg-success border-0 rounded-3" role="alert">
-        {% elif 'error' in message.tags %}
-          <div class="toast show align-items-center text-white bg-danger border-0 rounded-3" role="alert">
-        {% endif %}
-          <div class="d-flex">
-            <div class="toast-body">
-              {{ message }}
-            </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+  <!-- Toast Notifications -->
+  {% if messages %}
+  <div class="toast-container position-fixed top-0 end-0 p-3">
+    {% for message in messages %}
+      {% if 'success' in message.tags %}
+        <div class="toast show align-items-center text-white bg-success border-0 rounded-3" role="alert">
+      {% elif 'error' in message.tags %}
+        <div class="toast show align-items-center text-white bg-danger border-0 rounded-3" role="alert">
+      {% endif %}
+        <div class="d-flex">
+          <div class="toast-body">
+            {{ message }}
           </div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
         </div>
-      {% endfor %}
-    </div>
-    {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+  {% endif %}
 </body>
-
 </html>
