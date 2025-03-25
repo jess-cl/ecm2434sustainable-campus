@@ -1,65 +1,87 @@
-name: Django CI/CD to PythonAnywhere
+name: Django CI/CD to PythonAnywhere (SSH)
 
 on:
   push:
-    branches:
-      - main  # 只在 main 分支推送时触发部署
+    branches: [ main ]
 
 permissions:
   contents: read
 
 jobs:
   deploy:
-    name: Deploy to PythonAnywhere
+    name: Deploy via SSH
     runs-on: ubuntu-latest
+    env:
+      PA_USER: ${{ secrets.PA_USERNAME }}
+      PROJECT_DIR: ${{ secrets.PA_PROJECT_DIR }}
+      VENV_NAME: ${{ secrets.PA_VENV_NAME }}
 
     steps:
-      # 1. 拉取仓库代码
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      # 2. 设置 Python 环境
-      - name: Set up Python
+      - name: Set up Python 3.10
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10'  # 根据你的 PythonAnywhere 环境设置
+          python-version: '3.10'
 
-      # 3. 安装依赖
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          python -m pip install --upgrade pip setuptools wheel
+          pip install -r requirements.txt --no-cache-dir
+          pip list
 
-      # 4. 运行 Django 测试
-      - name: Run tests
+      - name: Run Django tests
         run: |
-          python manage.py test
-
-      # 5. 部署到 PythonAnywhere
-      - name: Deploy to PythonAnywhere
+          python manage.py check --deploy
+          python manage.py test --noinput
         env:
-          PA_USERNAME: ${{ secrets.PA_USERNAME }}      # PythonAnywhere 用户名
-          PA_API_TOKEN: ${{ secrets.PA_API_TOKEN }}    # API Token（来自 PythonAnywhere）
-          PA_DOMAIN: ${{ secrets.PA_DOMAIN }}          # 你的 PythonAnywhere 域名
+          DJANGO_SETTINGS_MODULE: sustainableCampus.settings
+          DJANGO_SECRET_KEY: "dummy-for-tests"
+          DATABASE_URL: sqlite:///:memory:
+
+      - name: SSH Setup
+        uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Execute Deployment
         run: |
-          # 设置 SSH 密钥（若已使用 API Token 可跳过此步）
-          mkdir -p ~/.ssh
           ssh-keyscan -H ssh.pythonanywhere.com >> ~/.ssh/known_hosts
           
-          # 连接并执行部署命令
-          ssh $PA_USERNAME@ssh.pythonanywhere.com <<EOF
-          cd ~/ecm2434sustainable-campus
-
-          # 拉取最新代码
+          ssh -o StrictHostKeyChecking=no ${PA_USER}@ssh.pythonanywhere.com << 'DEPLOY'
+          # 基础操作
+          cd $PROJECT_DIR || { echo "Project directory missing"; exit 1; }
+          git reset --hard HEAD
+          git clean -fd
           git pull origin main
 
-          # 激活虚拟环境（确保名称正确）
-          workon your_virtualenv
+          # Python环境
+          if ! workon $VENV_NAME; then
+            echo "Failed to activate virtualenv $VENV_NAME"
+            exit 1
+          fi
 
-          # 执行 Django 迁移、收集静态文件
-          python manage.py migrate
-          python manage.py collectstatic --noinput
+          # 依赖管理
+          pip install --upgrade pip setuptools wheel
+          pip install -r requirements.txt --no-cache-dir
 
-          # 触发 PythonAnywhere Web App 重载
-          touch ~/ecm2434sustainable-campus/reload.py
-          EOF
+          # Django操作
+          python manage.py check --deploy
+          python manage.py migrate --noinput
+          python manage.py collectstatic --noinput --clear
+
+          # 重载应用
+          reload_webapp || touch ~/reload.trigger
+
+          # 健康检查
+          curl -s http://${PA_USER}.pythonanywhere.com/healthcheck | grep OK
+          DEPLOY
+
+      - name: Post-Deploy Verification
+        run: |
+          echo "Latest commit deployed:"
+          ssh -o StrictHostKeyChecking=no ${PA_USER}@ssh.pythonanywhere.com \
+            "cd $PROJECT_DIR && git log -1 --pretty='%h - %an - %s'"
