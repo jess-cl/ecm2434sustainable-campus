@@ -38,10 +38,10 @@ jobs:
           PA_DOMAIN: ${{ secrets.PA_DOMAIN }}
         run: |
           sshpass -p $PA_API_TOKEN ssh $PA_USERNAME@ssh.pythonanywhere.com <<EOF
-          cd ~/your_project_directory
+          cd ~/ecm2434sustainable-campus
           git pull origin main
           workon your_virtualenv
           python manage.py migrate
           python manage.py collectstatic --noinput
-          touch ~/your_project_directory/reload.py
+          touch ~/ecm2434sustainable-campus/reload.py
           EOF
