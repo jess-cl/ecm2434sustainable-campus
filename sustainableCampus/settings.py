@@ -102,7 +102,30 @@ WSGI_APPLICATION = 'sustainableCampus.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'sustainableCampu$deploymentdb',
+#         'USER': 'sustainableCampu',
+#         'PASSWORD': 'suscam123',
+#         'HOST': 'sustainableCampus.mysql.pythonanywhere-services.com',
+#         'PORT': '3306',
+#         'OPTIONS': {
+#             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+#             'charset': 'utf8mb4',
+#         },
+#     }
+# }
+
+if os.getenv("GITHUB_ACTIONS"):  # Run in GitHub Actions
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
+else:  # run in PythonAnywhere 
+   DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'sustainableCampu$deploymentdb',
