@@ -1,6 +1,5 @@
 name: Django CI/CD to PythonAnywhere (SSH)
 
-
 on:
   push:
     branches: [ main ]
