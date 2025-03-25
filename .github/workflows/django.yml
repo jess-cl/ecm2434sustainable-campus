@@ -47,10 +47,7 @@ jobs:
 
       - name: Execute Deployment
         run: |
-          # 添加主机到 known_hosts
           ssh-keyscan -H ssh.pythonanywhere.com >> ~/.ssh/known_hosts
-
-          # 单次 SSH 连接执行所有操作
           ssh -t -o StrictHostKeyChecking=no ${PA_USER}@ssh.pythonanywhere.com << 'DEPLOY'
           # 从 Secrets 注入变量
           PROJECT_DIR="${{ secrets.PA_PROJECT_DIR }}"
@@ -60,20 +57,32 @@ jobs:
           echo "项目目录: \$PROJECT_DIR"
           echo "虚拟环境: \$VENV_NAME"
 
-          # 强制创建目录（如果不存在）
+          # 强制创建目录并进入
           mkdir -p "\$PROJECT_DIR"
           cd "\$PROJECT_DIR" || { echo "目录不存在且创建失败"; exit 1; }
 
-          # 初始化 Git（如果未初始化）
+          # 初始化 Git 并设置 SSH 协议仓库
           if [ ! -d .git ]; then
             git init
-            git remote add origin ${{ github.repositoryUrl }}
+            git remote add origin git@github.com:jess-cl/ecm2434sustainable-campus.git  # 改为 SSH URL
           fi
+
+          # 配置 Git SSH 认证
+          export GIT_SSH_COMMAND="ssh -i ~/.ssh/id_rsa"  # 使用 PythonAnywhere 上的密钥
 
           # 强制同步代码
           git fetch origin main
+          git checkout -b main
           git reset --hard origin/main
           git clean -fd
+
+          # 验证代码文件存在性
+          echo "当前目录: $(pwd)"
+          ls -la
+          if [ ! -f requirements.txt ]; then
+            echo "错误: requirements.txt 不存在！"
+            exit 1
+          fi
 
           # 虚拟环境操作
           if [ ! -f ~/.virtualenvs/\$VENV_NAME/bin/activate ]; then
@@ -89,8 +98,8 @@ jobs:
           python manage.py migrate --noinput
           python manage.py collectstatic --noinput --clear
 
-          # 重载应用
-          reload_webapp || touch ~/reload.trigger
+          # 触发重载
+          touch ~/reload.trigger
 
           # 健康检查
           curl -sf http://${PA_USER}.pythonanywhere.com/healthcheck | grep OK || exit 1
