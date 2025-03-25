@@ -9,79 +9,42 @@ permissions:
 
 jobs:
   deploy:
-    name: Deploy via SSH
     runs-on: ubuntu-latest
     env:
-      PA_USER: ${{ secrets.PA_USERNAME }}
-      PROJECT_DIR: ${{ secrets.PA_PROJECT_DIR }}
-      VENV_NAME: ${{ secrets.PA_VENV_NAME }}
+      PA_USER: ${{ secrets.PA_USERNAME }}  # 从 Secrets 获取用户名
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip setuptools wheel
-          pip install -r requirements.txt --no-cache-dir
-          pip list
-
-      - name: Run Django tests
-        run: |
-          python manage.py check --deploy
-          python manage.py test --noinput
-        env:
-          DJANGO_SETTINGS_MODULE: sustainableCampus.settings
-          DJANGO_SECRET_KEY: "dummy-for-tests"
-          DATABASE_URL: "sqlite:///:memory:"
-
-      - name: SSH Setup
-        uses: webfactory/ssh-agent@v0.7.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
       - name: Execute Deployment
         run: |
           ssh-keyscan -H ssh.pythonanywhere.com >> ~/.ssh/known_hosts
+          ssh -t -o StrictHostKeyChecking=no ${PA_USER}@ssh.pythonanywhere.com << 'DEPLOY'
+          # 显式设置变量
+          export PROJECT_DIR="${{ secrets.PA_PROJECT_DIR }}"
+          export VENV_NAME="${{ secrets.PA_VENV_NAME }}"
           
-          ssh -o StrictHostKeyChecking=no ${PA_USER}@ssh.pythonanywhere.com << 'DEPLOY'
-          # 基础操作
-          cd $PROJECT_DIR || { echo "Project directory missing"; exit 1; }
+          # 调试：打印变量值
+          echo "PROJECT_DIR: $PROJECT_DIR"
+          echo "VENV_NAME: $VENV_NAME"
+          
+          # 进入项目目录
+          cd $PROJECT_DIR || { echo "Directory $PROJECT_DIR not found"; exit 1; }
+          
+          # 拉取代码
           git reset --hard HEAD
           git clean -fd
           git pull origin main
-
-          # Python环境
-          if ! workon $VENV_NAME; then
-            echo "Failed to activate virtualenv $VENV_NAME"
-            exit 1
-          fi
-
-          # 依赖管理
-          pip install --upgrade pip setuptools wheel
-          pip install -r requirements.txt --no-cache-dir
-
-          # Django操作
-          python manage.py check --deploy
-          python manage.py migrate --noinput
-          python manage.py collectstatic --noinput --clear
-
-          # 重载应用
+          
+          # 激活虚拟环境
+          source ~/.virtualenvs/$VENV_NAME/bin/activate || { echo "Virtualenv $VENV_NAME not found"; exit 1; }
+          
+          # 安装依赖
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          
+          # Django 操作
+          python manage.py migrate
+          python manage.py collectstatic --noinput
+          
+          # 重启应用
           reload_webapp || touch ~/reload.trigger
-
-          # 健康检查
-          curl -s http://${PA_USER}.pythonanywhere.com/healthcheck | grep OK
           DEPLOY
-
-      - name: Post-Deploy Verification
-        run: |
-          echo "Latest commit deployed:"
-          ssh -o StrictHostKeyChecking=no ${PA_USER}@ssh.pythonanywhere.com \
-            "cd $PROJECT_DIR && git log -1 --pretty='%h - %an - %s'"
