@@ -3,7 +3,7 @@ name: Django CI/CD to PythonAnywhere
 on:
   push:
     branches:
-      - main  
+      - main  # 只在 main 分支推送时触发部署
 
 permissions:
   contents: read
@@ -14,34 +14,52 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1. 拉取仓库代码
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # 2. 设置 Python 环境
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10'  
+          python-version: '3.10'  # 根据你的 PythonAnywhere 环境设置
 
+      # 3. 安装依赖
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      # 4. 运行 Django 测试
       - name: Run tests
         run: |
           python manage.py test
 
+      # 5. 部署到 PythonAnywhere
       - name: Deploy to PythonAnywhere
         env:
-          PA_USERNAME: ${{ secrets.PA_USERNAME }}
-          PA_API_TOKEN: ${{ secrets.PA_API_TOKEN }}
-          PA_DOMAIN: ${{ secrets.PA_DOMAIN }}
+          PA_USERNAME: ${{ secrets.PA_USERNAME }}      # PythonAnywhere 用户名
+          PA_API_TOKEN: ${{ secrets.PA_API_TOKEN }}    # API Token（来自 PythonAnywhere）
+          PA_DOMAIN: ${{ secrets.PA_DOMAIN }}          # 你的 PythonAnywhere 域名
         run: |
-          sshpass -p $PA_API_TOKEN ssh $PA_USERNAME@ssh.pythonanywhere.com <<EOF
+          # 设置 SSH 密钥（若已使用 API Token 可跳过此步）
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ssh.pythonanywhere.com >> ~/.ssh/known_hosts
+          
+          # 连接并执行部署命令
+          ssh $PA_USERNAME@ssh.pythonanywhere.com <<EOF
           cd ~/ecm2434sustainable-campus
+
+          # 拉取最新代码
           git pull origin main
+
+          # 激活虚拟环境（确保名称正确）
           workon your_virtualenv
+
+          # 执行 Django 迁移、收集静态文件
           python manage.py migrate
           python manage.py collectstatic --noinput
+
+          # 触发 PythonAnywhere Web App 重载
           touch ~/ecm2434sustainable-campus/reload.py
           EOF
