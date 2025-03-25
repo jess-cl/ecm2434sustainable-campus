@@ -46,114 +46,113 @@ jobs:
           # 硬编码 SSH 私钥（需替换为你的实际密钥）
           ssh-private-key: |
             -----BEGIN OPENSSH PRIVATE KEY-----
-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
------END OPENSSH PRIVATE KEY-----
-
+            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
+            -----END OPENSSH PRIVATE KEY-----
 
       - name: Execute Deployment
         run: |
           ssh-keyscan -H ssh.pythonanywhere.com >> ~/.ssh/known_hosts
           ssh -t -o StrictHostKeyChecking=no sustainableCampus@ssh.pythonanywhere.com << 'DEPLOY'
-          # 硬编码路径和虚拟环境名称
-          PROJECT_DIR="ecm2434sustainable-campus"
-          VENV_NAME="venv"
-          
-          echo "===== 部署调试信息 ====="
-          echo "项目目录: \$PROJECT_DIR"
-          echo "虚拟环境: \$VENV_NAME"
+            # 硬编码路径和虚拟环境名称
+            PROJECT_DIR="ecm2434sustainable-campus"
+            VENV_NAME="venv"
 
-          # 强制创建目录并进入
-          mkdir -p "\$PROJECT_DIR"
-          cd "\$PROJECT_DIR" || { echo "目录不存在且创建失败"; exit 1; }
+            echo "===== 部署调试信息 ====="
+            echo "项目目录: \$PROJECT_DIR"
+            echo "虚拟环境: \$VENV_NAME"
 
-          # 配置 Git SSH 认证
-          export GIT_SSH_COMMAND="ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no"
+            # 强制创建目录并进入
+            mkdir -p "\$PROJECT_DIR"
+            cd "\$PROJECT_DIR" || { echo "目录不存在且创建失败"; exit 1; }
 
-          # 初始化 Git（如果未初始化）
-          if [ ! -d .git ]; then
-            git init
-            git remote add origin git@github.com:jess-cl/ecm2434sustainable-campus.git  # 你的仓库地址
-          fi
+            # 配置 Git SSH 认证
+            export GIT_SSH_COMMAND="ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no"
 
-          # 强制同步代码
-          git fetch origin main
-          git reset --hard origin/main
-          git clean -fd
+            # 初始化 Git（如果未初始化）
+            if [ ! -d .git ]; then
+              git init
+              git remote add origin git@github.com:jess-cl/ecm2434sustainable-campus.git  # 你的仓库地址
+            fi
 
-          # 验证代码文件存在性
-          echo "当前目录: \$(pwd)"
-          ls -la
-          if [ ! -f requirements.txt ]; then
-            echo "错误: requirements.txt 不存在！"
-            exit 1
-          fi
+            # 强制同步代码
+            git fetch origin main
+            git reset --hard origin/main
+            git clean -fd
 
-          # 虚拟环境操作
-          if [ ! -f ~/.virtualenvs/\$VENV_NAME/bin/activate ]; then
-            python -m venv ~/.virtualenvs/\$VENV_NAME
-          fi
-          source ~/.virtualenvs/\$VENV_NAME/bin/activate
+            # 验证代码文件存在性
+            echo "当前目录: \$(pwd)"
+            ls -la
+            if [ ! -f requirements.txt ]; then
+              echo "错误: requirements.txt 不存在！"
+              exit 1
+            fi
 
-          # 安装依赖
-          pip install --upgrade pip
-          pip install -r requirements.txt
+            # 虚拟环境操作
+            if [ ! -f ~/.virtualenvs/\$VENV_NAME/bin/activate ]; then
+              python -m venv ~/.virtualenvs/\$VENV_NAME
+            fi
+            source ~/.virtualenvs/\$VENV_NAME/bin/activate
 
-          # Django 操作
-          python manage.py migrate --noinput
-          python manage.py collectstatic --noinput --clear
+            # 安装依赖
+            pip install --upgrade pip
+            pip install -r requirements.txt
 
-          # 触发重载
-          touch ~/reload.trigger
+            # Django 操作
+            python manage.py migrate --noinput
+            python manage.py collectstatic --noinput --clear
 
-          # 健康检查
-          curl -sf http://sustainableCampus.pythonanywhere.com/healthcheck | grep OK || exit 1
-          echo "===== 部署完成 ====="
+            # 触发重载
+            touch ~/reload.trigger
+
+            # 健康检查
+            curl -sf http://sustainableCampus.pythonanywhere.com/healthcheck | grep OK || exit 1
+            echo "===== 部署完成 ====="
           DEPLOY
 
       - name: Post-Deploy Verification
