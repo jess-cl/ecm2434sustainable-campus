@@ -12,13 +12,13 @@ jobs:
     name: Deploy via SSH
     runs-on: ubuntu-latest
     env:
-      PA_USER: ${{ secrets.PA_USERNAME }}  # PythonAnywhere 用户名
+      PA_USER: ${{ secrets.PA_USERNAME }}  # 用户名
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # 获取完整提交历史
+          fetch-depth: 0
 
       - name: Set up Python 3.10
         uses: actions/setup-python@v4
@@ -43,74 +43,58 @@ jobs:
       - name: SSH Setup
         uses: webfactory/ssh-agent@v0.7.0
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}  # 从 Secrets 加载 SSH 密钥
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Execute Deployment
         run: |
-          # 将 PythonAnywhere 主机添加到已知主机
+          # 添加主机到 known_hosts
           ssh-keyscan -H ssh.pythonanywhere.com >> ~/.ssh/known_hosts
 
-          # 执行 SSH 部署命令
+          # 单次 SSH 连接执行所有操作
           ssh -t -o StrictHostKeyChecking=no ${PA_USER}@ssh.pythonanywhere.com << 'DEPLOY'
-          # 从 GitHub Secrets 注入环境变量
-          export PROJECT_DIR="${{ secrets.PA_PROJECT_DIR }}"
-          export VENV_NAME="${{ secrets.PA_VENV_NAME }}"
+          # 从 Secrets 注入变量
+          PROJECT_DIR="${{ secrets.PA_PROJECT_DIR }}"
+          VENV_NAME="${{ secrets.PA_VENV_NAME }}"
           
-          echo "===== 开始部署 ====="
+          echo "===== 部署调试信息 ====="
           echo "项目目录: \$PROJECT_DIR"
           echo "虚拟环境: \$VENV_NAME"
 
-          # 检查项目目录是否存在
-          if [ ! -d "\$PROJECT_DIR" ]; then
-            echo "错误：项目目录 \$PROJECT_DIR 不存在！"
-            exit 1
-          fi
+          # 强制创建目录（如果不存在）
+          mkdir -p "\$PROJECT_DIR"
+          cd "\$PROJECT_DIR" || { echo "目录不存在且创建失败"; exit 1; }
 
-          # 进入项目目录
-          cd \$PROJECT_DIR || exit 1
-
-          # 初始化 Git 仓库（如果不存在）
+          # 初始化 Git（如果未初始化）
           if [ ! -d .git ]; then
-            echo "初始化 Git 仓库..."
             git init
             git remote add origin ${{ github.repositoryUrl }}
           fi
 
           # 强制同步代码
-          echo "拉取最新代码..."
-          git fetch --all
+          git fetch origin main
           git reset --hard origin/main
           git clean -fd
 
           # 虚拟环境操作
-          echo "激活虚拟环境..."
           if [ ! -f ~/.virtualenvs/\$VENV_NAME/bin/activate ]; then
-            echo "创建虚拟环境..."
             python -m venv ~/.virtualenvs/\$VENV_NAME
           fi
           source ~/.virtualenvs/\$VENV_NAME/bin/activate
 
           # 安装依赖
-          echo "安装依赖..."
-          pip install --upgrade pip setuptools wheel
-          pip install -r requirements.txt --no-cache-dir
+          pip install --upgrade pip
+          pip install -r requirements.txt
 
           # Django 操作
-          echo "执行数据库迁移..."
           python manage.py migrate --noinput
-          
-          echo "收集静态文件..."
           python manage.py collectstatic --noinput --clear
 
-          # 重载应用（PythonAnywhere 专用命令）
-          echo "重载应用..."
+          # 重载应用
           reload_webapp || touch ~/reload.trigger
 
           # 健康检查
-          echo "验证健康检查..."
           curl -sf http://${PA_USER}.pythonanywhere.com/healthcheck | grep OK || exit 1
-
-          echo "===== 部署成功 ====="
+          echo "===== 部署完成 ====="
           DEPLOY
 
       - name: Post-Deploy Verification
