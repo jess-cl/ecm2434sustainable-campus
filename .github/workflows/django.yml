@@ -111,7 +111,7 @@ jobs:
             mkdir -p "\$PROJECT_DIR"
             cd "\$PROJECT_DIR" || { echo "The directory does not exist and failed to be created."; exit 1; }
 
-            export GIT_SSH_COMMAND="ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no"
+            export GIT_SSH_COMMAND="ssh -i ~/.ssh/authorized_keys -o StrictHostKeyChecking=no"
 
             
             if [ ! -d .git ]; then
