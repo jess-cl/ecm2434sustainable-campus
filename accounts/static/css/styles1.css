@@ -1,6 +1,17 @@
 body, html {
     margin: 0;
     padding: 0;
+    height: 100%;
+}
+
+.login-page .container-fluid {
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.login-page .row {
+    height: 100%;
 }
 
 .left-panel {
@@ -10,19 +21,10 @@ body, html {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-}
-
-.icon-list li {
-    padding-left: 1.5rem;
+    padding: 40px;
     position: relative;
+    z-index: 2;
 }
-.icon-list i {
-    position: absolute;
-    left: 0;
-    top: 0.25rem;
-}
-
 
 .right-panel {
     min-height: 100vh;
@@ -34,11 +36,8 @@ body, html {
     padding: 0 !important;
 }
 
-.login-page .container-fluid {
-    position: relative;
-}
-
-.login-page .container-fluid::before {
+@media (min-width: 769px) {
+    .login-page .container-fluid::before {
     content: "";
     position: absolute;
     top: 0;
@@ -50,33 +49,29 @@ body, html {
     background: #c5f1c5;
     pointer-events: none;
 }
-
-
-/*profile css*/
-.bg-success {
-    background-color: #006600 !important; /* Dark green header */
 }
 
-.profile-icon {
-    font-size: 24px;
-    font-weight: bold;
-}
+@media (max-width: 768px) {
+    body, html {
+        height: auto;
+    }
 
-.profile-container {
-    background-color: #e6ffe6; /* Light green for the profile container */
-    border: 1px solid #004d00; /* Dark green border */
-}
+    .login-page .container-fluid {
+        height: auto;
+        min-height: 100vh;
+    }
 
-.btn-success {
-    background-color: #006600; /* Dark green buttons */
-    border-color: #004d00;
-}
+    .left-panel {
+        min-height: 100vh;
+        background: #c5f1c5;
+        padding: 30px 15px;
+    }
 
-.btn-success:hover {
-    background-color: #004d00; /* Darker green on hover */
-    border-color: #003300;
-}
+    .right-panel {
+        display: none;
+    }
 
-h1, h2 {
-    color: #004d00; /* Dark green for headings */
+    .login-page .container-fluid::before {
+        display: none;
+    }
 }

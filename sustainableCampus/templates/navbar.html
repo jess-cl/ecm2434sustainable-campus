@@ -3,22 +3,22 @@
   <div class="container">
     <!-- Logo on the left -->
     <a href="/" class="navbar-brand p-0">
-      <img 
-        src="{% static 'images/logo.png' %}" 
-        alt="logo" 
-        height="50" 
+      <img
+        src="{% static 'images/logo.png' %}"
+        alt="logo"
+        height="50"
         class="d-inline-block"
       />
     </a>
 
     <!-- Hamburger menu button -->
-    <button 
-      class="navbar-toggler border-0" 
-      type="button" 
-      data-bs-toggle="offcanvas" 
-      data-bs-target="#sidebar" 
-      aria-controls="navbarNav" 
-      aria-expanded="false" 
+    <button
+      class="navbar-toggler border-0"
+      type="button"
+      data-bs-toggle="offcanvas"
+      data-bs-target="#sidebar"
+      aria-controls="navbarNav"
+      aria-expanded="false"
       aria-label="Toggle navigation"
     >
       <span class="navbar-toggler-icon"></span>
@@ -67,27 +67,27 @@
       <div class="d-flex align-items-center gap-3">
         <!-- User profile dropdown -->
         <div class="dropdown">
-          <a 
-            href="#" 
-            class="d-flex align-items-center text-decoration-none dropdown-toggle" 
-            id="dropdownUser" 
-            data-bs-toggle="dropdown" 
+          <a
+            href="#"
+            class="d-flex align-items-center text-decoration-none dropdown-toggle"
+            id="dropdownUser"
+            data-bs-toggle="dropdown"
             aria-expanded="false"
           >
             <div class="avatar avatar-sm">
                 <img src="
                 {% if user.is_authenticated and user.profile.image %}
-                    {{ user.profile.image.url }}" 
+                    {{ user.profile.image.url }}"
                 {% else %}
                     {% static 'images/default.png' %}
                 {% endif %}"
-                alt="Profile" 
+                alt="Profile"
                 class="rounded-circle w-100 h-100 object-fit-cover"
-            > 
+            >
             </div>
           </a>
-          <ul 
-            class="dropdown-menu dropdown-menu-end rounded-3 border-0 shadow-sm py-2 mt-2" 
+          <ul
+            class="dropdown-menu dropdown-menu-end rounded-3 border-0 shadow-sm py-2 mt-2"
             aria-labelledby="dropdownUser"
           >
             <li><a class="dropdown-item py-2 px-3 {% if '/accounts/profile/' in request.path %}active{% endif %}" href="/accounts/profile/">Profile</a></li>
@@ -104,30 +104,30 @@
 <div class="offcanvas offcanvas-end rounded-start-4 overflow-hidden" id="sidebar">
   <div class="offcanvas-header border-0 py-3">
     <h5 class="offcanvas-title">Sustainable Campus</h5>
-    <button 
-      type="button" 
-      class="btn-close" 
-      data-bs-dismiss="offcanvas" 
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="offcanvas"
       aria-label="Close"
     ></button>
   </div>
-  
+
   <div class="offcanvas-body p-0">
     <!-- User profile section -->
     <div class="p-4 text-center">
       <div class="avatar avatar-lg mx-auto mb-3">
         <img src="
             {% if user.is_authenticated and user.profile.image %}
-                {{ user.profile.image.url }}" 
+                {{ user.profile.image.url }}"
             {% else %}
                 {% static 'images/default.png' %}
             {% endif %}"
-            alt="Profile" 
+            alt="Profile"
             class="rounded-circle w-100 h-100 object-fit-cover"
-        > 
-      </div> 
+        >
+      </div>
     </div>
-    
+
     <!-- Navigation links -->
     <div class="p-3">
       <ul class="list-unstyled mb-0">
@@ -143,7 +143,7 @@
         </li>
         <li class="mb-2 {% if '/daily-quiz/' in request.path %}active{% endif %}">
           <a href="/daily-quiz/" class="nav-link rounded-pill py-2 px-3 d-block">
-            Daily Quiz 
+            Daily Quiz
           </a>
         </li>
         <li class="mb-2 {% if '/shop/' in request.path %}active{% endif %}">
@@ -151,8 +151,8 @@
             Shop
           </a>
         </li>
-        <li class="mb-2 {% if '/leaderboards/' in request.path %}active{% endif %}">
-          <a href="/leaderboards/" class="nav-link rounded-pill py-2 px-3 d-block">
+        <li class="mb-2 {% if '/leaderboards/forest' in request.path %}active{% endif %}">
+          <a href="/leaderboards/forest" class="nav-link rounded-pill py-2 px-3 d-block">
             Leaderboard
           </a>
         </li>
@@ -178,7 +178,7 @@
           <a href="/accounts/profile/" class="nav-link rounded-pill py-2 px-3 d-block">
             Profile
           </a>
-        </li> 
+        </li>
         <li>
           <a href="{% url 'accounts:logout' %}" class="nav-link rounded-pill py-2 px-3 d-block">
             Sign out
@@ -196,41 +196,41 @@
     padding-top: 3px;
     padding-bottom: 3px;
   }
-  
+
   .navbar .nav-link:hover,
   .navbar .nav-link:focus {
     background-color: rgba(147, 187, 171, 0.1);
     color: #44897a;
   }
-  
+
   .navbar .nav-item.active .nav-link,
   .dropdown-item.active {
     background-color: var(--bs-primary);
     color: var(--bs-white);
     font-weight: 600;
   }
-  
+
   #sidebar .nav-link {
     transition: background-color 0.2s ease, color 0.2s ease;
   }
-  
+
   #sidebar .nav-link:hover,
   #sidebar .nav-link:focus {
     background-color: rgba(147, 187, 171, 0.1);
     color: #44897a;
   }
-  
+
   #sidebar li.active .nav-link {
     background-color: rgba(147, 187, 171, 0.15);
     color: #44897a;
     font-weight: 600;
   }
-  
+
   .dropdown-item {
     transition: background-color 0.2s ease, color 0.2s ease;
     border-radius: 0.5rem;
   }
-  
+
   .dropdown-item:hover,
   .dropdown-item:focus {
     background-color: rgba(147, 187, 171, 0.1);

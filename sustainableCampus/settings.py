@@ -105,7 +105,7 @@ WSGI_APPLICATION = 'sustainableCampus.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'sustainableCampu$default',
+        'NAME': 'sustainableCampu$deploymentdb',
         'USER': 'sustainableCampu',
         'PASSWORD': 'suscam123',
         'HOST': 'sustainableCampus.mysql.pythonanywhere-services.com',
