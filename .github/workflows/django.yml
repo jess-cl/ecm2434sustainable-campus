@@ -40,7 +40,7 @@ jobs:
         env:
           DJANGO_SETTINGS_MODULE: sustainableCampus.settings
           DJANGO_SECRET_KEY: "dummy-for-tests"
-          DATABASE_URL: sqlite:///:memory:
+          DATABASE_URL: "sqlite:///:memory:"
 
       - name: SSH Setup
         uses: webfactory/ssh-agent@v0.7.0
